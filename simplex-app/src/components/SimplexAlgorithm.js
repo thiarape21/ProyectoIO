@@ -64,7 +64,7 @@ export function llenarSistemaEnMatriz(matriz, sistema) { // tiene que entrarle u
 
 let sistema = [
     [-1, -1, -2, 0, 0, 'N/A'], // -2x1 - 1x2 + 0s3 + 0s4 = 0 radios 0
-    [4, 1, 1, 0, 3, 0],   // 4x1 + 1x2 + 1s3 + 0s4 = 3 radios 0
+    [4, 1, 3, 0, 3, 0],   // 4x1 + 1x2 + 1s3 + 0s4 = 3 radios 0
     [4, 1, 0, 1, 2, 0]    // 4x1 + 1x2 + 0s3 + 1s4 = 2 radios 0
 ];
 
@@ -120,6 +120,24 @@ function encontrarIndiceColumnaMenorRadios(matriz) {
 }
 
 
+function iteraciones1(matrix){
+    let fila = encontrarIndiceMenorValorFilaZ(matrix);
+    let columna = encontrarIndiceColumnaMenorRadios(matrix);
+
+    let sub = matrix[fila][columna];
+    if (sub === 1){
+        return matrix;
+    }
+    else{
+        matrix[fila] = matrix[fila].map(valor => {
+            if (valor === '+INF' || valor === 'N/A') {
+                return valor; // No dividir valores especiales
+            }
+            return typeof valor === 'number' ? valor / sub : valor;   // no correcto corregir 
+        });
+    }
+
+}
 
 
 let matriz = calcularRadios(matrix);
@@ -128,3 +146,4 @@ console.log(matriz);
 
 let indiceColumnaMenorRadios = encontrarIndiceColumnaMenorRadios(matriz);
 console.log("El índice de la fila con el menor valor en 'Radios' es:", indiceColumnaMenorRadios);
+
