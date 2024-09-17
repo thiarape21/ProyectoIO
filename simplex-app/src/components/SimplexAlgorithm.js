@@ -172,31 +172,46 @@ function convertirfila1(matrix) {
 
 function convertirColumnas0(matriz, filaConUno) {
     let columna = encontrarIndiceMenorValorFilaZ(matriz);// encuentra el valor de la columna 
+    console.log("identifico donde hay un 1: " + columna);
+
+
 
     if (columna === undefined || columna < 0) {
         throw new Error("Índice de columna inválido."); // espera valor valido de columna 
     }
 
     for (let i = 1; i < matriz.length; i++) { 
-        if (i === filaConUno) {
+
+        let nuevaFila = matriz[i].slice(2, -1);
+        if ( filaConUno === nuevaFila[i]) {
+            console.log('numero de valor que matrix con fila 1:' );
+            console.log(matriz);
             continue; // ignora la fila con el 1
         }
 
-        let valorColumna = matriz[i][columna];  //empieza en uno por el encabezado se supone que agarra fila de i y columna que seria j 
-
+        let valorColumna = matriz[i][columna];  // Toma el valor en la columna seleccionada para esta fila
+        console.log(`Fila ${i}, valor en la columna ${columna}: ${valorColumna}`);
+        
         console.log('deberia agarrar el valor : ' + valorColumna);
         if (valorColumna === 0) {
+            console.log('numero de valor que matrix con fila si hay un cero:' );
+            console.log(matriz);
             continue; // ignora si hay un 0 en esa posicion 
         } else {
            
-            let nuevaFila = matriz[i].slice(2, -1).map((valor) => {
+             nuevaFila = matriz[i].slice(2, -1).map((valor, indexOf) => {
                 if (typeof valor === 'number') {
-                    console.log('numero de valor que entra:' + valor);
-                    return  ((-1 * valor) * filaConUno[i]  + valorColumna);
+                    console.log(valor);
+                    console.log(indexOf);
+                   console.log("valor que cambia: " + ((-1 *nuevaFila[columna-2]) * filaConUno[indexOf]  + valor));
+                    
+                    return  ((-1 * valor) * filaConUno[i-1]  + valor);
                 }
                 return valor;
+                
             });
 
+            console.log( "ver pedazo de matriz que se cambia: " + matriz[i].splice(2, nuevaFila.length, ...nuevaFila));
             matriz[i].splice(2, nuevaFila.length, ...nuevaFila);
         }
     }
@@ -223,15 +238,21 @@ export function casoBase() {
     
     let fila1 = encontrarIndiceColumnaMenorRadios(matriz);
 
-    let linea = matriz[fila1].slice(2, -1);
+   
 
     let iteracion1 = convertirfila1(matrix);
 
-    //iteracion1 = convertirColumnas0(iteracion1, linea);
+    let linea = matriz[fila1].slice(2, -1);
 
-
-
+    console.log("main liena con uno: " + linea);
+    console.log("matriz antes de de la seguna iteracion: ");
     console.log(iteracion1);
+
+   iteracion1 = convertirColumnas0(iteracion1, linea);
+
+
+    console.log("despues de la interacion de ceros: ");
+   console.log(iteracion1);
 
 
 
