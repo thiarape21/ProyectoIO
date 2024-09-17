@@ -69,8 +69,13 @@ function encontrarIndiceMenorValorFilaZ(matriz) {
     let filaZ = matriz[1]; 
     let valores = filaZ.slice(2, -1); 
     let menorValor = Math.min(...valores.filter(valor => typeof valor === 'number'));
-    let indiceMenorValor = valores.indexOf(menorValor);
-    return indiceMenorValor + 2 ;// ajuste del tamaño real de la matriz
+    if (menorValor < 0){
+        let indiceMenorValor = valores.indexOf(menorValor);
+        return indiceMenorValor + 2 ;// ajuste del tamaño real de la matriz
+    }
+   else{
+        return -1;
+   }
 }
 
 
@@ -161,6 +166,28 @@ function convertirfila1(matrix){
 
         return matrix;
     }
+
+}
+
+
+function convertirColumnas0(matriz){
+    let columna = encontrarIndiceMenorValorFilaZ(matriz);
+    let fila1 = encontrarIndiceColumnaMenorRadios(matriz);
+
+    if (fila1 === undefined || columna === undefined || fila1 < 0 || columna< 0) {
+        throw new Error("Índice de fila o columna inválido.");
+    }
+
+
+    while (columna != -1){
+
+        columna = encontrarIndiceMenorValorFilaZ(matriz);
+
+
+
+    }
+    
+
 
 }
 
