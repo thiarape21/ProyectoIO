@@ -147,15 +147,18 @@ function convertirfila1(matrix){
         return matrix;
     }
     else{
-        matrix[fila] = matrix[fila].map(valor => {
+        let nuevaLinea = linea.map(valor => {
             if (valor === '+INF' || valor === 'N/A') {
                 return valor; // No dividir valores especiales
             }
-            if (typeof valor === 'number'){
+            if (typeof valor === 'number') {
                 return valor / sub;
             }
             return valor;
         });
+
+        matrix[fila].splice(2, linea.length, ...nuevaLinea);
+
         return matrix;
     }
 
@@ -179,6 +182,8 @@ let matriz = llenarSistemaEnMatriz(matrix1,sistema);
 let matrix = calcularRadios(matriz);
 
 let iteracion1= convertirfila1(matrix);
+
+
 
 console.log(iteracion1);
 
