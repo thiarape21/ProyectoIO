@@ -3,12 +3,12 @@ import React from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import SimplexForm from './components/SimplexForm';
 import SimplexOptions from './components/SimplexOptions';
-import { simplexBasic} from './components/SimplexAlgorithm';
+import { casoBase} from './components/SimplexAlgorithm';
 
 
 function App() {
 
-  window.simplexBasic = simplexBasic;
+  window.casoBase = casoBase;
  
   return (
     <Router>
