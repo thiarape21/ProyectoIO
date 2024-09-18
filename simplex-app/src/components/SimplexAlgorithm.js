@@ -1,5 +1,6 @@
 
 // caso basico 
+// TODO: empate con la variable saliente y variable entrante 
 
 //** Recibe como parametro la cantidad de variables y restricciones 
 //devuelve la matriz vacia con 0 en donde van los numeros correspondientes del sistema
