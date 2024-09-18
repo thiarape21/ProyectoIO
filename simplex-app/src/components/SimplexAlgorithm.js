@@ -32,7 +32,7 @@ function simplexBasic(vari, res) { //arma la matrix segun la cantidad de restric
 
 
 // Necesita la cantidad de variables y restricciones
-function construirArray(vari, res) { // hace el encabezado de la matrix y el costado de la matriz
+function construirArray(vari, res) { //! hace el encabezado de la matrix y el costado de la matriz del caso base
     let array = [];
     array.push("i");
     array.push("BVH");
@@ -88,8 +88,10 @@ function encontrarIndiceMenorValorFilaZ(matriz) {
 function calcularRadios(matriz) {
     let columnaIndiceMenor = encontrarIndiceMenorValorFilaZ(matriz);
     let indiceColumnaRHS = matriz[1].length;
+     matriz[1][indiceColumnaRHS - 1] = 'N/A'
 
-    for (let i = 1; i < matriz.length; i++) {
+
+    for (let i = 2; i < matriz.length; i++) {
         let valorColumna = matriz[i][columnaIndiceMenor];
         let rhs = matriz[i][indiceColumnaRHS - 2];
 
@@ -139,7 +141,10 @@ function convertirfila1(matrix) {
 
     let columna = encontrarIndiceMenorValorFilaZ(matrix);
     let fila = encontrarIndiceColumnaMenorRadios(matrix);
+    let variableEntrante = matrix[0][columna];
+    let variableSaliente= matrix[fila][1];
 
+    console.log(`La variable Entrante es: ${variableEntrante}, La variante Saliente es: ${variableSaliente}`);
 
     if (fila === undefined || columna === undefined || fila < 0 || columna < 0) {
         throw new Error("Índice de fila o columna inválido.");
@@ -152,6 +157,7 @@ function convertirfila1(matrix) {
 
 
     if (sub === 1) {
+        matrix[fila][1] = variableEntrante;
         return matrix;
     }
     else {
@@ -160,13 +166,14 @@ function convertirfila1(matrix) {
                 return valor; // No dividir valores especiales
             }
             if (typeof valor === 'number') {
+                matrix[fila][1] = variableEntrante;
                 return valor / sub;
             }
             return valor;
         });
 
         matrix[fila].splice(2, linea.length, ...nuevaLinea);
-        return matrix;
+        return matrix; //? se  podria hacer que indique la variable entrante y la saliente.
     }
 
 }
@@ -229,21 +236,31 @@ function convertirColumnas0(matriz, filaConUno) {
 }
 
 
+
+
+
+
+
 export function casoBase() {// TODO: enciclar el sistema para que lo haga hasta que no haya negativos en z
     // TODO: hacer que esta funcionn reciba los parametros necesarios para que haga el caso base
-
-
     let matrix1 = simplexBasic(2, 2);
+
 
     // si el sistema entra asi no necesito llenar la matriz 
 
-    let sistema = [
-        [-2, -1, 0, 0, 0], // -2x1 - 1x2 + 0s3 + 0s4 = 0 radios 0
-        [4, 1, 1, 0, 3],   // 4x1 + 1x2 + 1s3 + 0s4 = 3 radios 0
-        [4, 1, 0, 1, 2]    // 4x1 + 1x2 + 0s3 + 1s4 = 2 radios 0
-    ];
+    // let sistema = [
+    //     [-1, -2, -4, 0, -1, -1, 0], 
+    //     [2, 6, 3, 2, 3, 4, 1, 600]   
+            
+    // ];
 
-    let matriz = llenarSistemaEnMatriz(matrix1, sistema);
+ /*    let sistema2 =[
+        [-5, -4, 0, 0, 0],
+        [2, -1, 1, 0, 4],
+        [5, 3, 0, 1, 15]
+    ]
+
+    let matriz = llenarSistemaEnMatriz(matrix1, sistema2);
 
     let matrix = calcularRadios(matriz);
 
@@ -266,7 +283,7 @@ export function casoBase() {// TODO: enciclar el sistema para que lo haga hasta 
     console.log(iteracion1);
 
 
-
+ */
 }
 
 
