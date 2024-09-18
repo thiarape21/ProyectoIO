@@ -2,6 +2,8 @@
 // caso basico 
 // TODO: empate con la variable saliente y variable entrante 
 // TODO: hacer que funcionn casoBase reciba los parametros necesarios para que haga el caso base
+// TODO: hacer que se vean las operaciones que se realizan en cada iteracion 
+
 
 //** Recibe como parametro la cantidad de variables y restricciones 
 //devuelve la matriz vacia con 0 en donde van los numeros correspondientes del sistema
@@ -69,6 +71,19 @@ function llenarSistemaEnMatriz(matriz, sistema) {
 
 
 //encuentra el menor de los datos en la fila de la z , recibe la matriz armada
+//! aqui tiene que ser el empate con la variable de entrada 
+/*tomar en consideracion lo siquiente 
+    1. x2, s3
+        Se selecciona siempre la variable de decision
+        • X2
+    2. x2, x4
+        Se selecciona el subíndice menor
+        • X2
+    3. s4, s7
+        Se selecciona la del subíndice menor
+        • s4
+*/
+
 function encontrarIndiceMenorValorFilaZ(matriz) {
     let filaZ = matriz[1];
     let valores = filaZ.slice(2, -1);
@@ -112,6 +127,18 @@ function calcularRadios(matriz) {
 
 
 //enntra la matriz  calcula el menor indice para sacar cual de los radios usar
+//! aqui tiene que ser el empate con la variable de salida 
+/*
+Qué vamos a hacer si tenemos un empate en los radios
+• Si la variable que sale x4, s5
+• Saque s5 → Deje las X porque son las variables que queremos hacer básicas, sáquelas de último
+• Si salen 2 X, saque cualquiera
+• Si salen 2 variables de holgura, saque cualquiera
+• Preferiblemente el del subíndice menor
+• Si f3, f7 → saque f3
+
+ */
+
 function encontrarIndiceColumnaMenorRadios(matriz) {
 
     const indiceColumnaRadio = matriz[0].indexOf('Radios');
@@ -138,6 +165,8 @@ function encontrarIndiceColumnaMenorRadios(matriz) {
 
 
 //** Pone el 1 donde debe ser  */
+
+//! aqui hago el cambio en la matriz de las variables entrantes y saliente.
 function convertirfila1(matrix) {
 
     let columna = encontrarIndiceMenorValorFilaZ(matrix);
