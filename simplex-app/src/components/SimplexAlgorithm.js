@@ -135,7 +135,7 @@ function convertirfila1(matrix) {
 
     let columna = encontrarIndiceMenorValorFilaZ(matrix);
     let fila = encontrarIndiceColumnaMenorRadios(matrix);
-    
+
 
     if (fila === undefined || columna === undefined || fila < 0 || columna < 0) {
         throw new Error("Índice de fila o columna inválido.");
@@ -170,49 +170,70 @@ function convertirfila1(matrix) {
 
 }
 
+
+function arraysSonIguales(arr1, arr2) {
+    if (arr1.length !== arr2.length) {
+        return false;
+    }
+    for (let i = 0; i < arr1.length; i++) {
+        if (arr1[i] !== arr2[i]) {
+            return false;
+        }
+    }
+    return true;
+}
+
 function convertirColumnas0(matriz, filaConUno) {
     let columna = encontrarIndiceMenorValorFilaZ(matriz);// encuentra el valor de la columna 
-    console.log("identifico donde hay un 1: " + columna);
-
+    
+  
 
 
     if (columna === undefined || columna < 0) {
         throw new Error("Índice de columna inválido."); // espera valor valido de columna 
     }
 
-    for (let i = 1; i < matriz.length; i++) { 
 
-        let nuevaFila = matriz[i].slice(2, -1);
-        if ( filaConUno === nuevaFila[i]) {
-            console.log('numero de valor que matrix con fila 1:' );
-            console.log(matriz);
+    for (let i = 1; i < matriz.length; i++) {
+
+        let valoresFilaActual = matriz[i].slice(2, -1);
+
+        console.log(valoresFilaActual);
+
+        if (arraysSonIguales(filaConUno,valoresFilaActual)) {
+
+            console.log('fila con el 1: ' +valoresFilaActual);
             continue; // ignora la fila con el 1
         }
 
         let valorColumna = matriz[i][columna];  // Toma el valor en la columna seleccionada para esta fila
-        console.log(`Fila ${i}, valor en la columna ${columna}: ${valorColumna}`);
-        
-        console.log('deberia agarrar el valor : ' + valorColumna);
+
+
+
         if (valorColumna === 0) {
-            console.log('numero de valor que matrix con fila si hay un cero:' );
+            console.log('numero de valor que matrix con fila si hay un cero:');
             console.log(matriz);
             continue; // ignora si hay un 0 en esa posicion 
+
         } else {
+
            
-             nuevaFila = matriz[i].slice(2, -1).map((valor, indexOf) => {
+            let nuevaFila = valoresFilaActual.map((valor, indexOf) => {
                 if (typeof valor === 'number') {
-                    console.log(valor);
-                    console.log(indexOf);
-                   console.log("valor que cambia: " + ((-1 *nuevaFila[columna-2]) * filaConUno[indexOf]  + valor));
-                    
-                    return  ((-1 * valor) * filaConUno[i-1]  + valor);
+                    console.log('valor que enntra en el else: ' + valor);
+                    console.log("indice del map : " + indexOf);
+                    console.log("esto me devuelve la operacion: " + ((-1 * matriz[i][columna]) * filaConUno[indexOf] + valor));
+
+                    return ((-1 *  matriz[i][columna]) * filaConUno[indexOf] + valor);
                 }
                 return valor;
-                
+
             });
 
-            console.log( "ver pedazo de matriz que se cambia: " + matriz[i].splice(2, nuevaFila.length, ...nuevaFila));
+
             matriz[i].splice(2, nuevaFila.length, ...nuevaFila);
+            console.log('como se ve la matriz: ');
+            console.log(matriz);
         }
     }
 
@@ -227,32 +248,32 @@ export function casoBase() {
     // si el sistema entra asi no necesito llenar la matriz 
 
     let sistema = [
-        [-2, -1, 0, 0, 0 ,'N/A'], // -2x1 - 1x2 + 0s3 + 0s4 = 0 radios 0
-        [4, 1, 1 , 0, 3],   // 4x1 + 1x2 + 1s3 + 0s4 = 3 radios 0
+        [-2, -1, 0, 0, 0], // -2x1 - 1x2 + 0s3 + 0s4 = 0 radios 0
+        [4, 1, 1, 0, 3],   // 4x1 + 1x2 + 1s3 + 0s4 = 3 radios 0
         [4, 1, 0, 1, 2]    // 4x1 + 1x2 + 0s3 + 1s4 = 2 radios 0
     ];
 
     let matriz = llenarSistemaEnMatriz(matrix1, sistema);
 
     let matrix = calcularRadios(matriz);
-    
+
     let fila1 = encontrarIndiceColumnaMenorRadios(matriz);
 
-   
+
 
     let iteracion1 = convertirfila1(matrix);
 
     let linea = matriz[fila1].slice(2, -1);
 
-    console.log("main liena con uno: " + linea);
+    //  console.log("main liena con uno: " + linea);
     console.log("matriz antes de de la seguna iteracion: ");
     console.log(iteracion1);
 
-   iteracion1 = convertirColumnas0(iteracion1, linea);
+    iteracion1 = convertirColumnas0(iteracion1, linea);
 
 
     console.log("despues de la interacion de ceros: ");
-   console.log(iteracion1);
+    console.log(iteracion1);
 
 
 
