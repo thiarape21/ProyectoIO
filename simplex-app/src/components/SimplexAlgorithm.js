@@ -1,6 +1,7 @@
 
 // caso basico 
 // TODO: empate con la variable saliente y variable entrante 
+// TODO: hacer que funcionn casoBase reciba los parametros necesarios para que haga el caso base
 
 //** Recibe como parametro la cantidad de variables y restricciones 
 //devuelve la matriz vacia con 0 en donde van los numeros correspondientes del sistema
@@ -51,8 +52,8 @@ function construirArray(vari, res) { //! hace el encabezado de la matrix y el co
 }
 
 
- // tiene que entrarle un sistema de ecuaciones  para poder remplazarlo en la matriz que se contruyo
- //devuelve la matrix armada
+// tiene que entrarle un sistema de ecuaciones  para poder remplazarlo en la matriz que se contruyo
+//devuelve la matrix armada
 function llenarSistemaEnMatriz(matriz, sistema) {
 
     for (let i = 0; i < sistema.length; i++) {
@@ -88,7 +89,7 @@ function encontrarIndiceMenorValorFilaZ(matriz) {
 function calcularRadios(matriz) {
     let columnaIndiceMenor = encontrarIndiceMenorValorFilaZ(matriz);
     let indiceColumnaRHS = matriz[1].length;
-     matriz[1][indiceColumnaRHS - 1] = 'N/A'
+    matriz[1][indiceColumnaRHS - 1] = 'N/A'
 
 
     for (let i = 2; i < matriz.length; i++) {
@@ -97,7 +98,7 @@ function calcularRadios(matriz) {
 
         if (valorColumna === 0) {
             matriz[i][indiceColumnaRHS - 1] = '+INF';
-        } else if ((rhs < 0 && valorColumna > 0) || (rhs < 0 && valorColumna < 0 )){ //! revisar si esta condicion si existe los dos negativos
+        } else if ((rhs < 0 && valorColumna > 0) || (rhs < 0 && valorColumna < 0)) { //! revisar si esta condicion si existe los dos negativos
             matriz[i][indiceColumnaRHS - 1] = '+INF';
         } else if (valorColumna < 0) {
             matriz[i][indiceColumnaRHS - 1] = '+INF';
@@ -142,16 +143,16 @@ function convertirfila1(matrix) {
     let columna = encontrarIndiceMenorValorFilaZ(matrix);
     let fila = encontrarIndiceColumnaMenorRadios(matrix);
     let variableEntrante = matrix[0][columna];
-    let variableSaliente= matrix[fila][1];
+    // let variableSaliente = matrix[fila][1];
 
-    console.log(`La variable Entrante es: ${variableEntrante}, La variante Saliente es: ${variableSaliente}`);
+    //  console.log(`La variable Entrante es: ${variableEntrante}, La variante Saliente es: ${variableSaliente}`);
 
     if (fila === undefined || columna === undefined || fila < 0 || columna < 0) {
         throw new Error("Índice de fila o columna inválido.");
     }
 
     let sub = matrix[fila][columna]; // por el que hay que dividir
-    console.log('divisor: ' + sub);
+    //  console.log('divisor: ' + sub);
 
     let linea = matrix[fila].slice(2, -1); //escoge la porcion de matriz que realizar
 
@@ -203,11 +204,11 @@ function convertirColumnas0(matriz, filaConUno) {
 
         let valoresFilaActual = matriz[i].slice(2, -1);
 
-        console.log(valoresFilaActual);
+        // console.log(valoresFilaActual);
 
-        if (arraysSonIguales(filaConUno,valoresFilaActual)) {
+        if (arraysSonIguales(filaConUno, valoresFilaActual)) {
 
-            console.log('fila con el 1: ' +valoresFilaActual);
+            //  console.log('fila con el 1: ' + valoresFilaActual);
             continue; // ignora la fila con el 1
         }
 
@@ -219,16 +220,16 @@ function convertirColumnas0(matriz, filaConUno) {
 
         } else {
 
-           
+
             let nuevaFila = valoresFilaActual.map((valor, indexOf) => {
                 if (typeof valor === 'number') {
-                    return ((-1 *  matriz[i][columna]) * filaConUno[indexOf] + valor);
+                    return ((-1 * matriz[i][columna]) * filaConUno[indexOf] + valor);
                 }
                 return valor;
 
             });
             matriz[i].splice(2, nuevaFila.length, ...nuevaFila);
-            console.log(matriz);
+            // console.log(matriz);
         }
     }
 
@@ -241,49 +242,51 @@ function convertirColumnas0(matriz, filaConUno) {
 
 
 
-export function casoBase() {// TODO: enciclar el sistema para que lo haga hasta que no haya negativos en z
-    // TODO: hacer que esta funcionn reciba los parametros necesarios para que haga el caso base
+export function casoBase() {
+    
+
     let matrix1 = simplexBasic(2, 2);
 
-
-    // si el sistema entra asi no necesito llenar la matriz 
-
-    // let sistema = [
-    //     [-1, -2, -4, 0, -1, -1, 0], 
-    //     [2, 6, 3, 2, 3, 4, 1, 600]   
-            
-    // ];
-
- /*    let sistema2 =[
+    let sistema2 = [
         [-5, -4, 0, 0, 0],
         [2, -1, 1, 0, 4],
         [5, 3, 0, 1, 15]
     ]
 
     let matriz = llenarSistemaEnMatriz(matrix1, sistema2);
+    let negativo = 0;
+    let iteracion = 0;
 
-    let matrix = calcularRadios(matriz);
+    while (negativo !== -1) {
+        console.log(`\nIteración ${iteracion + 1}:`);
+        console.log("Matriz actual antes de calcular radios:");
+        console.table(matriz);
 
-    let fila1 = encontrarIndiceColumnaMenorRadios(matriz);
+        // Calcular los radios y encontrar el índice de la columna
+        let matrixConRadios = calcularRadios(matriz);
+        let fila1 = encontrarIndiceColumnaMenorRadios(matriz);
+        let iteracion1 = convertirfila1(matrixConRadios);
+
+        // Convertir columnas a cero
+        let linea = matriz[fila1].slice(2, -1);
+        iteracion1 = convertirColumnas0(iteracion1, linea);
+
+        // Mostrar la matriz después de cada iteración
+        console.log("Matriz después de convertir columnas a cero:");
+        console.table(iteracion1);
+
+        // Encontrar si todavía hay valores negativos en la fila Z
+        negativo = encontrarIndiceMenorValorFilaZ(iteracion1);
+
+        // Actualizar matriz para la siguiente iteración
+        matriz = iteracion1;
+        iteracion++;
+    }
+
+  
+    //! este es el que dice que ya no hay negativos encontrarIndiceMenorValorFilaZ(matriz);
 
 
-
-    let iteracion1 = convertirfila1(matrix);
-
-    let linea = matriz[fila1].slice(2, -1);
-
-    //  console.log("main liena con uno: " + linea);
-    console.log("matriz antes de de la seguna iteracion: ");
-    console.log(iteracion1);
-
-    iteracion1 = convertirColumnas0(iteracion1, linea);
-
-
-    console.log("despues de la interacion de ceros: ");
-    console.log(iteracion1);
-
-
- */
 }
 
 
