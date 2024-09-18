@@ -1,7 +1,8 @@
 
 // caso basico 
 
-
+//** Recibe como parametro la cantidad de variables y restricciones 
+//devuelve la matriz vacia con 0 en donde van los numeros correspondientes del sistema
 function simplexBasic(vari, res) { //arma la matrix segun la cantidad de restricciones y variables
     let matrix = [];
     let rows = res + 2;
@@ -29,8 +30,8 @@ function simplexBasic(vari, res) { //arma la matrix segun la cantidad de restric
 }
 
 
-
-function construirArray(vari, res) { // hace el encabezado de la matrix
+// Necesita la cantidad de variables y restricciones
+function construirArray(vari, res) { // hace el encabezado de la matrix y el costado de la matriz
     let array = [];
     array.push("i");
     array.push("BVH");
@@ -49,8 +50,9 @@ function construirArray(vari, res) { // hace el encabezado de la matrix
 }
 
 
-
-function llenarSistemaEnMatriz(matriz, sistema) { // tiene que entrarle un sistema de ecuaciones como el de abajo para poder remplazarlo en la matriz que se contruyo
+ // tiene que entrarle un sistema de ecuaciones  para poder remplazarlo en la matriz que se contruyo
+ //devuelve la matrix armada
+function llenarSistemaEnMatriz(matriz, sistema) {
 
     for (let i = 0; i < sistema.length; i++) {
         let ecuacion = sistema[i];
@@ -64,7 +66,7 @@ function llenarSistemaEnMatriz(matriz, sistema) { // tiene que entrarle un siste
 }
 
 
-
+//encuentra el menor de los datos en la fila de la z , recibe la matriz armada
 function encontrarIndiceMenorValorFilaZ(matriz) {
     let filaZ = matriz[1];
     let valores = filaZ.slice(2, -1);
@@ -74,13 +76,14 @@ function encontrarIndiceMenorValorFilaZ(matriz) {
         return indiceMenorValor + 2;// ajuste del tamaño real de la matriz
     }
     else {
-        return -1;
+        return -1; //! si no encuentra un numero negativo retorna -1 
     }
 }
 
 
 
 // Función para calcular los valores en la columna de 'Radios'
+//recibe la matriz  armada y calcula los radios 
 function calcularRadios(matriz) {
     let columnaIndiceMenor = encontrarIndiceMenorValorFilaZ(matriz);
     let indiceColumnaRHS = matriz[1].length;
@@ -91,9 +94,9 @@ function calcularRadios(matriz) {
 
         if (valorColumna === 0) {
             matriz[i][indiceColumnaRHS - 1] = '+INF';
-        } else if ((rhs < 0 && valorColumna > 0) || (rhs > 0 && valorColumna < 0)) {
+        } else if ((rhs < 0 && valorColumna > 0) || (rhs < 0 && valorColumna < 0 )){ //! revisar si esta condicion si existe los dos negativos
             matriz[i][indiceColumnaRHS - 1] = '+INF';
-        } else if (rhs === 0) {
+        } else if (valorColumna < 0) {
             matriz[i][indiceColumnaRHS - 1] = '+INF';
         } else {
             matriz[i][indiceColumnaRHS - 1] = rhs / valorColumna;
@@ -104,7 +107,7 @@ function calcularRadios(matriz) {
 }
 
 
-
+//enntra la matriz  calcula el menor indice para sacar cual de los radios usar
 function encontrarIndiceColumnaMenorRadios(matriz) {
 
     const indiceColumnaRadio = matriz[0].indexOf('Radios');
@@ -130,7 +133,7 @@ function encontrarIndiceColumnaMenorRadios(matriz) {
 
 
 
-
+//** Pone el 1 donde debe ser  */
 function convertirfila1(matrix) {
 
     let columna = encontrarIndiceMenorValorFilaZ(matrix);
@@ -162,15 +165,12 @@ function convertirfila1(matrix) {
         });
 
         matrix[fila].splice(2, linea.length, ...nuevaLinea);
-
-        console.log("matriz despues de poner un 1: ");
-        console.log(matrix);
         return matrix;
     }
 
 }
 
-
+//**compara arrays */
 function arraysSonIguales(arr1, arr2) {
     if (arr1.length !== arr2.length) {
         return false;
@@ -183,16 +183,13 @@ function arraysSonIguales(arr1, arr2) {
     return true;
 }
 
+
+//** coloca ceros en todos la columna */
 function convertirColumnas0(matriz, filaConUno) {
     let columna = encontrarIndiceMenorValorFilaZ(matriz);// encuentra el valor de la columna 
-    
-  
-
-
     if (columna === undefined || columna < 0) {
         throw new Error("Índice de columna inválido."); // espera valor valido de columna 
     }
-
 
     for (let i = 1; i < matriz.length; i++) {
 
@@ -208,10 +205,7 @@ function convertirColumnas0(matriz, filaConUno) {
 
         let valorColumna = matriz[i][columna];  // Toma el valor en la columna seleccionada para esta fila
 
-
-
         if (valorColumna === 0) {
-            console.log('numero de valor que matrix con fila si hay un cero:');
             console.log(matriz);
             continue; // ignora si hay un 0 en esa posicion 
 
@@ -220,19 +214,12 @@ function convertirColumnas0(matriz, filaConUno) {
            
             let nuevaFila = valoresFilaActual.map((valor, indexOf) => {
                 if (typeof valor === 'number') {
-                    console.log('valor que enntra en el else: ' + valor);
-                    console.log("indice del map : " + indexOf);
-                    console.log("esto me devuelve la operacion: " + ((-1 * matriz[i][columna]) * filaConUno[indexOf] + valor));
-
                     return ((-1 *  matriz[i][columna]) * filaConUno[indexOf] + valor);
                 }
                 return valor;
 
             });
-
-
             matriz[i].splice(2, nuevaFila.length, ...nuevaFila);
-            console.log('como se ve la matriz: ');
             console.log(matriz);
         }
     }
@@ -241,7 +228,9 @@ function convertirColumnas0(matriz, filaConUno) {
 }
 
 
-export function casoBase() {
+export function casoBase() {// TODO: enciclar el sistema para que lo haga hasta que no haya negativos en z
+    // TODO: hacer que esta funcionn reciba los parametros necesarios para que haga el caso base
+
 
     let matrix1 = simplexBasic(2, 2);
 
