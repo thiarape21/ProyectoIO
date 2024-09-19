@@ -1,9 +1,14 @@
 
 // caso basico 
-// TODO: empate con la variable saliente y variable entrante 
+
 // TODO: hacer que funcionn casoBase reciba los parametros necesarios para que haga el caso base
 // TODO: hacer que se vean las operaciones que se realizan en cada iteracion 
 // TODO: revisar si tengo que poner los unos en las de holgura o no
+// TODO: ordenar el codigo por carpetas
+// *programa asume 1 que la expresion ya esta convertida y 2 que hay unos donde deben haber 
+
+
+//!Problemas no acotados significa que los radios todos son infinitos y aun asi hay negativos en la fila del Z
 
 
 //** Recibe como parametro la cantidad de variables y restricciones 
@@ -84,12 +89,24 @@ function llenarSistemaEnMatriz(matriz, sistema) {
         Se selecciona la del subíndice menor
         • s4
 */
-
+//! aqui es el no acotado
+//!puede ser un problema a la hora de desplegar los datos 
 function encontrarIndiceMenorValorFilaZ(matriz) {
     let filaZ = matriz[1];
     let valores = filaZ.slice(2, -1);
     let menorValor = Math.min(...valores.filter(valor => typeof valor === 'number'));
+    
     if (menorValor < 0) {
+        const indiceColumnaRadio = matriz[0].indexOf('Radios');
+        let radios = matriz.slice(1).map(fila => fila[indiceColumnaRadio]);
+
+        let todosSonInf = radios.every(valor => valor === '+INF' || valor === 'N/A');
+
+        if (todosSonInf) {
+            console.log("Problema no acotado: todos los radios son +INF y hay valores negativos en la fila z.");
+            return -1; // Indicador de problema no acotado  si encuentra empate  lo manda a 
+        }
+
         let indiceMenorValor = valores.indexOf(menorValor);
         return indiceMenorValor + 2;// ajuste del tamaño real de la matriz
     }
@@ -149,6 +166,7 @@ function encontrarIndiceColumnaMenorRadios(matriz) {
 
     let valoresRadios = radios.map(valor => {
         if (valor === 'N/A' || valor === '+INF') {
+            console.log("valor infinito");
             return Infinity; // Considerar '+INF' como infinito
         }
         return Number(valor); // Convertir a número
@@ -327,22 +345,31 @@ function convertirColumnas0(matriz, filaConUno) {
 export function casoBase() {
     
 
-    let matrix1 = simplexBasic(2, 3);
+    let matrix1 = simplexBasic(2, 2);
 
-    let sistema2 = [
+ /*    
+    sin restricciones
+ let sistema2 = [ 
         [-5, -4, 0, 0, 0],
         [2, -1, 1, 0, 4],
         [5, 3, 0, 1, 15]
-    ]
+    ] */
 
+/*empate en la variable saliente 
     let sistema1 =[
         [-15,-10,0,0,0,0],
         [1,0,1,0,0,2],
         [0,1,0,1,0,2],
         [1,1,0,0,1,4]
-    ]
+    ] */
 
-    let matriz = llenarSistemaEnMatriz(matrix1, sistema1);
+    let sistema3 =[
+        [-15,-10,0,0,0],
+        [1,0,1,0,2],
+        [1,-1,0,1,0]
+    ];
+
+    let matriz = llenarSistemaEnMatriz(matrix1, sistema3);
     let negativo = 0;
     let iteracion = 0;
 
@@ -373,7 +400,7 @@ export function casoBase() {
     }
 
   
-    //! este es el que dice que ya no hay negativos encontrarIndiceMenorValorFilaZ(matriz);
+    //!  no acotado =  este es el que dice que ya no hay negativos encontrarIndiceMenorValorFilaZ(matriz);
 
 
 }
