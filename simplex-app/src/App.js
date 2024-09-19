@@ -3,7 +3,7 @@ import React from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import SimplexForm from './components/SimplexForm';
 import SimplexOptions from './components/SimplexOptions';
-import { casoBase} from './Algorithms/SimplexAlgorithm';
+import { casoBase} from './Algorithms/simplex_casoBase';
 
 
 function App() {

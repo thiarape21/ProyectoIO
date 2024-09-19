@@ -3,12 +3,9 @@
 
 // TODO: hacer que funcionn casoBase reciba los parametros necesarios para que haga el caso base
 // TODO: hacer que se vean las operaciones que se realizan en cada iteracion 
-// TODO: revisar si tengo que poner los unos en las de holgura o no
-// TODO: ordenar el codigo por carpetas
 // *programa asume 1 que la expresion ya esta convertida y 2 que hay unos donde deben haber 
 
 
-//!Problemas no acotados significa que los radios todos son infinitos y aun asi hay negativos en la fila del Z
 
 
 //** Recibe como parametro la cantidad de variables y restricciones 
@@ -104,7 +101,7 @@ function encontrarIndiceMenorValorFilaZ(matriz) {
 
         if (todosSonInf) {
             console.log("Problema no acotado: todos los radios son +INF y hay valores negativos en la fila z.");
-            return -1; // Indicador de problema no acotado  si encuentra empate  lo manda a 
+            return -2; // Indicador de problema no acotado  si encuentra empate  lo manda a 
         }
 
         let indiceMenorValor = valores.indexOf(menorValor);
@@ -188,27 +185,17 @@ function encontrarIndiceColumnaMenorRadios(matriz) {
          return indicesMenoresValores[0]; // Devuelve solo el primer índice si no hay repetidos
      }    
     
-    /* let menorValor = Math.min(...valoresRadios);
-    let indiceMenorValor = valoresRadios.indexOf(menorValor);
-    return indiceMenorValor + 1; */
+
 }
 
 
-//ademas de devolver las BVS seria bueno que las compare 
 function extraerBVS(matrix, indiceMenores){
     console.log('Hay empate en la variable saliente,indices: ');
     console.table(indiceMenores);
-
- //   let lineaBVS = [];
     let variableSeleccionada = 0;
     let menorIndice = Infinity;
 
-    //lista con todos los posibles variables salientes
-  /*   for(let i=0; i< indiceMenores.length; i++){
-        let indice = indiceMenores[i];
-        lineaBVS += matrix[indice][1];
-    } */
-
+   
     indiceMenores.forEach(indice=>{//la fila es: el elemento 1 de los indices menores en la matrix y la columna 1
         let variable = matrix[indice][1];// devuelve la variable exacta
         if (variable.startsWith('x')){
@@ -303,12 +290,7 @@ function convertirColumnas0(matriz, filaConUno) {
     for (let i = 1; i < matriz.length; i++) {
 
         let valoresFilaActual = matriz[i].slice(2, -1);
-
-        // console.log(valoresFilaActual);
-
         if (arraysSonIguales(filaConUno, valoresFilaActual)) {
-
-            //  console.log('fila con el 1: ' + valoresFilaActual);
             continue; // ignora la fila con el 1
         }
 
@@ -329,7 +311,6 @@ function convertirColumnas0(matriz, filaConUno) {
 
             });
             matriz[i].splice(2, nuevaFila.length, ...nuevaFila);
-            // console.log(matriz);
         }
     }
 
@@ -341,35 +322,12 @@ function convertirColumnas0(matriz, filaConUno) {
 
 
 
-// ! le tendrian que entrar la cantidad de restricciones y el sistema
-export function casoBase() {
+// ! le tendrian que entrar la cantidad de restricciones, variables y el sistema
+export function casoBase(variable, res, sistema) {
     
 
-    let matrix1 = simplexBasic(2, 2);
-
- /*    
-    sin restricciones
- let sistema2 = [ 
-        [-5, -4, 0, 0, 0],
-        [2, -1, 1, 0, 4],
-        [5, 3, 0, 1, 15]
-    ] */
-
-/*empate en la variable saliente 
-    let sistema1 =[
-        [-15,-10,0,0,0,0],
-        [1,0,1,0,0,2],
-        [0,1,0,1,0,2],
-        [1,1,0,0,1,4]
-    ] */
-
-    let sistema3 =[
-        [-15,-10,0,0,0],
-        [1,0,1,0,2],
-        [1,-1,0,1,0]
-    ];
-
-    let matriz = llenarSistemaEnMatriz(matrix1, sistema3);
+    let matrix1 = simplexBasic(variable, res);
+    let matriz = llenarSistemaEnMatriz(matrix1, sistema);
     let negativo = 0;
     let iteracion = 0;
 
@@ -380,27 +338,34 @@ export function casoBase() {
 
         // Calcular los radios y encontrar el índice de la columna
         let matrixConRadios = calcularRadios(matriz);
-        let fila1 = encontrarIndiceColumnaMenorRadios(matriz);
-        let iteracion1 = convertirfila1(matrixConRadios);
+        negativo = encontrarIndiceMenorValorFilaZ(matrixConRadios);
 
-        // Convertir columnas a cero
-        let linea = matriz[fila1].slice(2, -1);
-        iteracion1 = convertirColumnas0(iteracion1, linea);
 
-        // Mostrar la matriz después de cada iteración
-        console.log("Matriz después de convertir columnas a cero:");
-        console.table(iteracion1);
+        if (negativo !== -2){
 
-        // Encontrar si todavía hay valores negativos en la fila Z
-        negativo = encontrarIndiceMenorValorFilaZ(iteracion1);
+            let fila1 = encontrarIndiceColumnaMenorRadios(matriz);
+            let iteracion1 = convertirfila1(matrixConRadios);
 
-        // Actualizar matriz para la siguiente iteración
-        matriz = iteracion1;
-        iteracion++;
+            // Convertir columnas a cero
+            let linea = matriz[fila1].slice(2, -1);
+            iteracion1 = convertirColumnas0(iteracion1, linea);
+    
+            // Mostrar la matriz después de cada iteración
+            console.log("Matriz después de convertir columnas a cero:");
+            console.table(iteracion1);
+    
+            // Encontrar si todavía hay valores negativos en la fila Z
+            negativo = encontrarIndiceMenorValorFilaZ(iteracion1);
+    
+            // Actualizar matriz para la siguiente iteración
+            matriz = iteracion1;
+            iteracion++;
+
+        }
+        else{
+            return console.table(matriz);
+        }
     }
-
-  
-    //!  no acotado =  este es el que dice que ya no hay negativos encontrarIndiceMenorValorFilaZ(matriz);
 
 
 }
