@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import '../Form.css';
-import { simplexBasic } from './SimplexAlgorithm';
+import '../CSS/Form.css';
+import { simplexBasic } from '../Algorithms/SimplexAlgorithm';
 
 function SimplexForm() {
   const location = useLocation();

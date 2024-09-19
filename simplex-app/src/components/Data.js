@@ -1,6 +1,6 @@
 import React from 'react';
 import { useLocation } from 'react-router-dom';
-import './Data.css';
+import '../CSS/Data.css';
 
 function Data() {
   const location = useLocation();

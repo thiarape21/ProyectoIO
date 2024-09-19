@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import '../Options.css';
+import '../CSS/Options.css';
 
 
 function SimplexOptions() {
