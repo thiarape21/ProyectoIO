@@ -178,6 +178,8 @@ function encontrarIndiceColumnaMenorRadios(matriz) {
 
 //ademas de devolver las BVS seria bueno que las compare 
 function extraerBVS(matrix, indiceMenores){
+    console.log('Hay empate en la variable saliente,indices: ');
+    console.table(indiceMenores);
 
  //   let lineaBVS = [];
     let variableSeleccionada = 0;
@@ -190,11 +192,11 @@ function extraerBVS(matrix, indiceMenores){
     } */
 
     indiceMenores.forEach(indice=>{//la fila es: el elemento 1 de los indices menores en la matrix y la columna 1
-        let variable = matrix[indiceMenores[indice]][1];// devuelve la variable exacta
+        let variable = matrix[indice][1];// devuelve la variable exacta
         if (variable.startsWith('x')){
             let subindice = parseInt(variable.slice(1)); // Extraer el número de la variable
             if (subindice < menorIndice) {
-                variableSeleccionada =  indiceMenores[indice]; // tendria el numero de indice en matrix grande
+                variableSeleccionada =  indice; // tendria el numero de indice en matrix grande
                 menorIndice = subindice;
             }
 
@@ -202,7 +204,7 @@ function extraerBVS(matrix, indiceMenores){
             // Si no hay variables 'x', verificamos las 's'
             let subindice = parseInt(variable.slice(1)); // Extraer el número de la variable
             if (variableSeleccionada === 0 || subindice < menorIndice) {
-                variableSeleccionada =  indiceMenores[indice];
+                variableSeleccionada =  indice;
                 menorIndice = subindice;
             }
         }
@@ -210,7 +212,7 @@ function extraerBVS(matrix, indiceMenores){
 
 
     });
-
+    console.log('este indice variable seleecionada: ' + variableSeleccionada);
     return variableSeleccionada;
 }
 
@@ -325,7 +327,7 @@ function convertirColumnas0(matriz, filaConUno) {
 export function casoBase() {
     
 
-    let matrix1 = simplexBasic(2, 2);
+    let matrix1 = simplexBasic(2, 3);
 
     let sistema2 = [
         [-5, -4, 0, 0, 0],
@@ -333,7 +335,14 @@ export function casoBase() {
         [5, 3, 0, 1, 15]
     ]
 
-    let matriz = llenarSistemaEnMatriz(matrix1, sistema2);
+    let sistema1 =[
+        [-15,-10,0,0,0,0],
+        [1,0,1,0,0,2],
+        [0,1,0,1,0,2],
+        [1,1,0,0,1,4]
+    ]
+
+    let matriz = llenarSistemaEnMatriz(matrix1, sistema1);
     let negativo = 0;
     let iteracion = 0;
 
