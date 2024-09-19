@@ -3,6 +3,7 @@
 // TODO: empate con la variable saliente y variable entrante 
 // TODO: hacer que funcionn casoBase reciba los parametros necesarios para que haga el caso base
 // TODO: hacer que se vean las operaciones que se realizan en cada iteracion 
+// TODO: revisar si tengo que poner los unos en las de holgura o no
 
 
 //** Recibe como parametro la cantidad de variables y restricciones 
@@ -154,11 +155,64 @@ function encontrarIndiceColumnaMenorRadios(matriz) {
     });
 
     let menorValor = Math.min(...valoresRadios);
+     // Buscar todos los índices donde el menor valor se encuentra
+     let indicesMenoresValores = [];
+     valoresRadios.forEach((valor, indice) => {
+         if (valor === menorValor) {
+             indicesMenoresValores.push(indice + 1); // Sumar 1 para ajustar el índice a la matriz original
+         }
+     });
+ 
+     // Si hay más de un índice, devolver la lista de índices, sino, el primero
+     if (indicesMenoresValores.length > 1) {
+         return extraerBVS(matriz,indicesMenoresValores);
+     } else {
+         return indicesMenoresValores[0]; // Devuelve solo el primer índice si no hay repetidos
+     }    
+    
+    /* let menorValor = Math.min(...valoresRadios);
     let indiceMenorValor = valoresRadios.indexOf(menorValor);
-    return indiceMenorValor + 1;
+    return indiceMenorValor + 1; */
 }
 
 
+//ademas de devolver las BVS seria bueno que las compare 
+function extraerBVS(matrix, indiceMenores){
+
+ //   let lineaBVS = [];
+    let variableSeleccionada = 0;
+    let menorIndice = Infinity;
+
+    //lista con todos los posibles variables salientes
+  /*   for(let i=0; i< indiceMenores.length; i++){
+        let indice = indiceMenores[i];
+        lineaBVS += matrix[indice][1];
+    } */
+
+    indiceMenores.forEach(indice=>{//la fila es: el elemento 1 de los indices menores en la matrix y la columna 1
+        let variable = matrix[indiceMenores[indice]][1];// devuelve la variable exacta
+        if (variable.startsWith('x')){
+            let subindice = parseInt(variable.slice(1)); // Extraer el número de la variable
+            if (subindice < menorIndice) {
+                variableSeleccionada =  indiceMenores[indice]; // tendria el numero de indice en matrix grande
+                menorIndice = subindice;
+            }
+
+        }else if (variable.startsWith('s')) {
+            // Si no hay variables 'x', verificamos las 's'
+            let subindice = parseInt(variable.slice(1)); // Extraer el número de la variable
+            if (variableSeleccionada === 0 || subindice < menorIndice) {
+                variableSeleccionada =  indiceMenores[indice];
+                menorIndice = subindice;
+            }
+        }
+
+
+
+    });
+
+    return variableSeleccionada;
+}
 
 
 //** Pone el 1 donde debe ser  */
@@ -267,7 +321,7 @@ function convertirColumnas0(matriz, filaConUno) {
 
 
 
-
+// ! le tendrian que entrar la cantidad de restricciones y el sistema
 export function casoBase() {
     
 
