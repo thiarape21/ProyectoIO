@@ -1,0 +1,115 @@
+body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Roboto', sans-serif;
+    background-color: #f5f5f5;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+  }
+  
+  .container {
+    max-width: 900px;
+    margin: 20px auto;
+    padding: 20px;
+    background-color: #ffffff;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+    border-radius: 12px;
+    box-sizing: border-box;
+  }
+  
+  h2 {
+    font-size: 2.2rem;
+    color: #333;
+    margin-bottom: 30px;
+  }
+  
+  form {
+    width: 100%;
+  }
+  
+  h3 {
+    color: #00796b;
+    font-size: 1.5rem;
+    margin-bottom: 10px;
+    text-align: left;
+  }
+  
+  input[type="number"], select {
+    width: 80px;
+    height: 40px;
+    margin: 10px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    text-align: center;
+    font-size: 1rem;
+    background-color: #f9f9f9;
+  }
+  
+  input[type="number"]:focus, select:focus {
+    border-color: #009688;
+    outline: none;
+    box-shadow: 0 0 8px rgba(0, 150, 136, 0.2);
+  }
+  
+  button {
+    margin-top: 20px;
+    padding: 12px 30px;
+    background-color: #009688;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 1.2rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  button:hover {
+    background-color: #00796b;
+  }
+  
+  .restriction-row {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 20px;
+  }
+  
+  .restriction-row input {
+    margin: 5px;
+  }
+  
+  .restriction-row select {
+    margin: 5px;
+  }
+  
+  @media screen and (max-width: 768px) {
+    .restriction-row {
+      flex-direction: column;
+    }
+  
+    input[type="number"], select {
+      width: 100%;
+      margin: 5px 0;
+    }
+  
+    button {
+      font-size: 1rem;
+      padding: 10px 20px;
+    }
+  }
+  
+  @media screen and (max-width: 480px) {
+    h2 {
+      font-size: 1.8rem;
+    }
+  
+    button {
+      padding: 8px 20px;
+      font-size: 0.9rem;
+    }
+  }
+  

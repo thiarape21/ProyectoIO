@@ -2,7 +2,7 @@
 // caso basico 
 
 
-function simplexBasic(vari, res) { //arma la matrix segun la cantidad de restricciones y variables
+export function simplexBasic(vari, res) { //arma la matrix segun la cantidad de restricciones y variables
     let matrix = [];
     let rows = res + 2;
     let colums = vari + res + 4;
@@ -30,7 +30,7 @@ function simplexBasic(vari, res) { //arma la matrix segun la cantidad de restric
 
 
 
-function construirArray(vari, res) { // hace el encabezado de la matrix
+export function construirArray(vari, res) { // hace el encabezado de la matrix
     let array = [];
     array.push("i");
     array.push("BVH");
@@ -50,7 +50,7 @@ function construirArray(vari, res) { // hace el encabezado de la matrix
 
 
 
-function llenarSistemaEnMatriz(matriz, sistema) { // tiene que entrarle un sistema de ecuaciones como el de abajo para poder remplazarlo en la matriz que se contruyo
+export function llenarSistemaEnMatriz(matriz, sistema) { // tiene que entrarle un sistema de ecuaciones como el de abajo para poder remplazarlo en la matriz que se contruyo
 
     for (let i = 0; i < sistema.length; i++) {
         let ecuacion = sistema[i]; 
@@ -65,7 +65,7 @@ function llenarSistemaEnMatriz(matriz, sistema) { // tiene que entrarle un siste
 
 
 
-function encontrarIndiceMenorValorFilaZ(matriz) {
+export function encontrarIndiceMenorValorFilaZ(matriz) {
     let filaZ = matriz[1]; 
     let valores = filaZ.slice(2, -1); 
     let menorValor = Math.min(...valores.filter(valor => typeof valor === 'number'));
@@ -76,7 +76,7 @@ function encontrarIndiceMenorValorFilaZ(matriz) {
 
 
 // Función para calcular los valores en la columna de 'Radios'
-function calcularRadios(matriz) {
+export function calcularRadios(matriz) {
     let columnaIndiceMenor = encontrarIndiceMenorValorFilaZ(matriz);
     let indiceColumnaRHS= matriz[1].length;
     
@@ -100,7 +100,7 @@ function calcularRadios(matriz) {
 
 
 
-function encontrarIndiceColumnaMenorRadios(matriz) {
+export function encontrarIndiceColumnaMenorRadios(matriz) {
    
     const indiceColumnaRadio = matriz[0].indexOf('Radios');
     if (indiceColumnaRadio === -1) {

@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import '../Options.css';
+
 
 function SimplexOptions() {
   const navigate = useNavigate();
