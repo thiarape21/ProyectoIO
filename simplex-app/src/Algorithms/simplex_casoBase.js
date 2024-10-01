@@ -1,9 +1,8 @@
 
 // caso basico 
 
-// TODO: hacer que funcionn casoBase reciba los parametros necesarios para que haga el caso base
 // TODO: hacer que se vean las operaciones que se realizan en cada iteracion 
-// *programa asume 1 que la expresion ya esta convertida y 2 que hay unos donde deben haber 
+// *programa asume 1 que la expresion ya esta convertida en negativos
 
 
 

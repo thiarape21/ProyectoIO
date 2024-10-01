@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import '../CSS/Form.css';
-import { simplexBasic } from '../Algorithms/simplex_casoBase';
+import { casoBase } from '../Algorithms/simplex_casoBase';
 
 function SimplexForm() {
   const location = useLocation();
@@ -20,7 +20,7 @@ function SimplexForm() {
 
   // Función para manejar el cambio de los valores de la función objetivo
   const handleObjectiveChange = (index, value) => {
-    if (index >= 0 && index < objectiveValues.length) {
+    if (index >= 0) {
       const newValues = [...objectiveValues];
       newValues[index] = parseFloat(value) || 0;
       setObjectiveValues(newValues);
@@ -29,23 +29,51 @@ function SimplexForm() {
     }
   };
 
-  // Función para manejar el cambio de los valores de las restricciones
+  /*   // Función para manejar el cambio de los valores de las restricciones
+    const handleRestrictionChange = (rowIndex, colIndex, value) => {
+      if (restrictionsValues[rowIndex] && colIndex >= 0 && colIndex < variables) {
+        const newValues = [...restrictionsValues];
+        newValues[rowIndex][colIndex] = parseFloat(value) || 0;
+        console.log(`estos son las restricciones:`, newValues);
+        setRestrictionsValues(newValues);
+      } else {
+        console.error('Índice de restricciones fuera de rango.');
+      }
+    }; */
+
   const handleRestrictionChange = (rowIndex, colIndex, value) => {
-    if (restrictionsValues[rowIndex] && colIndex >= 0 && colIndex < variables) {
-      const newValues = [...restrictionsValues];
-      newValues[rowIndex][colIndex] = parseFloat(value) || 0;
-      setRestrictionsValues(newValues);
-    } else {
-      console.error('Índice de restricciones fuera de rango.');
+    // Crear una copia del array de restricciones
+    const newValues = [...restrictionsValues];
+
+    // Si la fila no existe, crear una nueva fila vacía
+    if (!newValues[rowIndex]) {
+      newValues[rowIndex] = [];
     }
+
+    // Si la columna está fuera del rango actual de la fila, expandirla con valores por defecto
+    if (colIndex >= newValues[rowIndex].length) {
+      for (let i = newValues[rowIndex].length; i <= colIndex; i++) {
+        newValues[rowIndex][i] = 0;  // Asignar un valor por defecto (por ejemplo, 0)
+      }
+    }
+
+    // Asignar el valor en la posición especificada
+    newValues[rowIndex][colIndex] = parseFloat(value) || 0;
+
+
+
+    // Actualizar el estado con el nuevo array
+    setRestrictionsValues(newValues);
   };
+
 
   // Función para manejar el cambio de los valores del lado derecho de las restricciones
   const handleRHSChange = (index, value) => {
-    if (index >= 0 && index < restrictionRHS.length) {
+    if (index >= 0) {
       const newValues = [...restrictionRHS];
       newValues[index] = parseFloat(value) || 0;
       setRestrictionRHS(newValues);
+
     } else {
       console.error('Índice del valor RHS fuera de rango.');
     }
@@ -64,25 +92,37 @@ function SimplexForm() {
 
   // Función para convertir los datos ingresados en una matriz para el algoritmo Simplex
   const convertToMatrix = () => {
-    // Crear la matriz inicial
-    const matrix = simplexBasic(variables, restrictions);
+    objectiveValues.push(0);
+    const newValues = [];
+    const matrix = [];
+    newValues.push(objectiveValues);
+    restrictionsValues.forEach((value) => newValues.push(value));
+    const columna = parseInt(restrictionsValues[0].length) + parseInt(restrictions);
 
-    // Llenar la matriz con la función objetivo
-    matrix[1].splice(2, variables, ...objectiveValues);
+    for (let i = 0; i < newValues.length; i++) {
+      matrix[i] = [];
+      for (let j = 0; j < columna; j++) {
+        if (i === 0 && j >= variables) {// fila de la z
+          matrix[i][j] = 0;
+        }
+        else if (i > 0 && j >= variables) { // filas de las restricciones
+          matrix[i][j] = 0;
+          matrix[i][variables - 1 + i] = 1;
+          if (j === columna - 1) { // RHS
+            matrix[i][j] = newValues[i][restrictionsValues[0].length - 1];
+          }
+        }
+        else {
+          matrix[i][j] = newValues[i][j];
+        }
+      }
 
-    // Llenar la matriz con las restricciones
-    restrictionsValues.forEach((row, i) => {
-      matrix[i + 2].splice(2, variables, ...row);
-      matrix[i + 2][matrix[i + 2].length - 2] = restrictionRHS[i];
-    });
-
-    // Agregar las variables artificiales a las restricciones
-    for (let i = 0; i < restrictions; i++) {
-      matrix[i + 2][variables + i + 2] = 1;
     }
-
     return matrix;
   };
+
+
+ 
 
   return (
     <div className="form-container">
@@ -131,7 +171,7 @@ function SimplexForm() {
                 type="number"
                 className="value-input"
                 placeholder="Valor"
-                onChange={(e) => handleRHSChange(index, e.target.value)}
+                onChange={(e) => handleRestrictionChange(index, variables, e.target.value)}
               />
             </div>
           </div>
@@ -141,9 +181,11 @@ function SimplexForm() {
           type="button"
           className="submit-button"
           onClick={() => {
-            const matrix = convertToMatrix();
-            console.log(matrix); // Puedes hacer algo con la matriz aquí, como pasarla a tu algoritmo
-            navigate('/data', { state: { objectiveValues, restrictionsValues, restrictionRHS, variables, restrictions } }); // Redirigir a la página de Data con los datos necesarios
+            const sistema=convertToMatrix();
+            const matrix = casoBase(parseInt(variables),parseInt(restrictions), sistema );
+
+            console.log(matrix); 
+           // navigate('/data', { state: { objectiveValues, restrictionsValues, restrictionRHS, variables, restrictions } }); // Redirigir a la página de Data con los datos necesarios 
           }}
         >
           Continuar
