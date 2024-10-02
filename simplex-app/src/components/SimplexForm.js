@@ -13,7 +13,7 @@ function SimplexForm() {
   const [restrictionsValues, setRestrictionsValues] = useState(
     Array(restrictions).fill().map(() => Array(variables).fill(0))
   );
-  const [restrictionRHS, setRestrictionRHS] = useState(Array(restrictions).fill(0));
+ 
   const [restrictionOperators, setRestrictionOperators] = useState(
     Array(restrictions).fill('≤')
   );
@@ -29,55 +29,23 @@ function SimplexForm() {
     }
   };
 
-  /*   // Función para manejar el cambio de los valores de las restricciones
-    const handleRestrictionChange = (rowIndex, colIndex, value) => {
-      if (restrictionsValues[rowIndex] && colIndex >= 0 && colIndex < variables) {
-        const newValues = [...restrictionsValues];
-        newValues[rowIndex][colIndex] = parseFloat(value) || 0;
-        console.log(`estos son las restricciones:`, newValues);
-        setRestrictionsValues(newValues);
-      } else {
-        console.error('Índice de restricciones fuera de rango.');
-      }
-    }; */
+
 
   const handleRestrictionChange = (rowIndex, colIndex, value) => {
-    // Crear una copia del array de restricciones
     const newValues = [...restrictionsValues];
-
-    // Si la fila no existe, crear una nueva fila vacía
     if (!newValues[rowIndex]) {
       newValues[rowIndex] = [];
     }
-
-    // Si la columna está fuera del rango actual de la fila, expandirla con valores por defecto
     if (colIndex >= newValues[rowIndex].length) {
       for (let i = newValues[rowIndex].length; i <= colIndex; i++) {
         newValues[rowIndex][i] = 0;  // Asignar un valor por defecto (por ejemplo, 0)
       }
     }
-
-    // Asignar el valor en la posición especificada
     newValues[rowIndex][colIndex] = parseFloat(value) || 0;
 
-
-
-    // Actualizar el estado con el nuevo array
     setRestrictionsValues(newValues);
   };
 
-
-  // Función para manejar el cambio de los valores del lado derecho de las restricciones
-  const handleRHSChange = (index, value) => {
-    if (index >= 0) {
-      const newValues = [...restrictionRHS];
-      newValues[index] = parseFloat(value) || 0;
-      setRestrictionRHS(newValues);
-
-    } else {
-      console.error('Índice del valor RHS fuera de rango.');
-    }
-  };
 
   // Función para manejar el cambio del operador de las restricciones
   const handleOperatorChange = (index, value) => {
@@ -102,8 +70,12 @@ function SimplexForm() {
     for (let i = 0; i < newValues.length; i++) {
       matrix[i] = [];
       for (let j = 0; j < columna; j++) {
-        if (i === 0 && j >= variables) {// fila de la z
+        if (i === 0 && j >= variables) {// fila de la z 
           matrix[i][j] = 0;
+        }
+        else if(i === 0 && j < variables){
+          matrix[i][j] = newValues[i][j] * -1;
+
         }
         else if (i > 0 && j >= variables) { // filas de las restricciones
           matrix[i][j] = 0;
@@ -183,9 +155,7 @@ function SimplexForm() {
           onClick={() => {
             const sistema=convertToMatrix();
             const matrix = casoBase(parseInt(variables),parseInt(restrictions), sistema );
-
-            console.log(matrix); 
-           // navigate('/data', { state: { objectiveValues, restrictionsValues, restrictionRHS, variables, restrictions } }); // Redirigir a la página de Data con los datos necesarios 
+           navigate('/data', { state: { objectiveValues, restrictionsValues, variables, restrictions, matrix} }); // Redirigir a la página de Data con los datos necesarios 
           }}
         >
           Continuar

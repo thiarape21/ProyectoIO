@@ -1,7 +1,11 @@
 
 // caso basico 
 
+
 // TODO: hacer que se vean las operaciones que se realizan en cada iteracion 
+// TODO: retorne cuando es no acotado 
+// TODO: que ponga los negativos antes de entrar 
+
 // *programa asume 1 que la expresion ya esta convertida en negativos
 
 
@@ -162,7 +166,6 @@ function encontrarIndiceColumnaMenorRadios(matriz) {
 
     let valoresRadios = radios.map(valor => {
         if (valor === 'N/A' || valor === '+INF') {
-            console.log("valor infinito");
             return Infinity; // Considerar '+INF' como infinito
         }
         return Number(valor); // Convertir a número
@@ -316,57 +319,61 @@ function convertirColumnas0(matriz, filaConUno) {
     return matriz;
 }
 
-
-
-
-
-
-// ! le tendrian que entrar la cantidad de restricciones, variables y el sistema
 export function casoBase(variable, res, sistema) {
-    
-
     let matrix1 = simplexBasic(variable, res);
     let matriz = llenarSistemaEnMatriz(matrix1, sistema);
     let negativo = 0;
     let iteracion = 0;
+    const iteraciones = []; 
 
     while (negativo !== -1) {
-        console.log(`\nIteración ${iteracion + 1}:`);
-        console.log("Matriz actual antes de calcular radios:");
-        console.table(matriz);
+        
 
-        // Calcular los radios y encontrar el índice de la columna
+        // Guardar la matriz actual en el array de iteraciones
+        iteraciones.push({
+            iteracion: iteracion + 1,
+            matriz: JSON.parse(JSON.stringify(matriz)) // Clonar la matriz para evitar referencias
+        });
+
+       
         let matrixConRadios = calcularRadios(matriz);
         negativo = encontrarIndiceMenorValorFilaZ(matrixConRadios);
 
-
-        if (negativo !== -2){
-
+        if (negativo !== -2) {
             let fila1 = encontrarIndiceColumnaMenorRadios(matriz);
             let iteracion1 = convertirfila1(matrixConRadios);
 
-            // Convertir columnas a cero
+           
             let linea = matriz[fila1].slice(2, -1);
             iteracion1 = convertirColumnas0(iteracion1, linea);
-    
-            // Mostrar la matriz después de cada iteración
-            console.log("Matriz después de convertir columnas a cero:");
-            console.table(iteracion1);
-    
-            // Encontrar si todavía hay valores negativos en la fila Z
+
+
+            // Guardar la matriz modificada en el array de iteraciones
+            iteraciones.push({
+                iteracion: iteracion + 1,
+                matriz: JSON.parse(JSON.stringify(iteracion1)) // Clonar la matriz para evitar referencias
+            });
+
+            
             negativo = encontrarIndiceMenorValorFilaZ(iteracion1);
-    
-            // Actualizar matriz para la siguiente iteración
+
+            
             matriz = iteracion1;
             iteracion++;
-
+        }else if(negativo === -2){
+            return "No acotado";
         }
-        else{
-            return console.table(matriz);
+        
+        else {
+            iteraciones.push({
+                iteracion: iteracion + 1,
+                matriz: JSON.parse(JSON.stringify(matriz))
+            });
+
         }
     }
-
-
+   
+    return iteraciones;
 }
 
 

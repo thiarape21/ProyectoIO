@@ -5,7 +5,7 @@ import '../CSS/Data.css';
 function Data() {
   const location = useLocation();
   console.log(location.state); // Agrega esto para verificar los datos recibidos
-  const { objectiveValues, restrictionsValues, restrictionRHS, variables, restrictions } = location.state || {};
+  const { objectiveValues, restrictionsValues, variables, restrictions, matrix } = location.state || {};
 
   if (!location.state) {
     return <div>No se recibieron datos.</div>;
@@ -15,21 +15,34 @@ function Data() {
     <div className="datos-container">
       <h2>Solución del Método Simplex</h2>
 
-      {/* Mostrar la función objetivo */}
-      <div className="equation">
-        <h3>Función Objetivo:</h3>
-        <p>Z = {objectiveValues.map((coef, index) => `${coef}x${index + 1}`).join(' + ')}</p>
-      </div>
+      {matrix.map((iteracionObj, iterIndex) => (
+        <div key={iterIndex} className="iteracion">
+          <h3>Iteración: {iteracionObj.iteracion}</h3>
 
-      {/* Mostrar las restricciones */}
-      <div className="restrictions">
-        <h3>Restricciones:</h3>
-        {restrictionsValues.map((row, rowIndex) => (
-          <p key={rowIndex}>
-            {row.map((coef, colIndex) => `${coef}x${colIndex + 1}`).join(' + ')} {restrictionRHS[rowIndex]}
-          </p>
-        ))}
-      </div>
+          {/* Mostrar la matriz */}
+          <div className="matriz">
+            <h4>Matriz:</h4>
+            <table border="1">
+              <thead>
+                <tr>
+                  {iteracionObj.matriz[0].map((colHeader, colIndex) => (
+                    <th key={colIndex}>{colHeader}</th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody>
+                {iteracionObj.matriz.slice(1).map((row, rowIndex) => (
+                  <tr key={rowIndex}>
+                    {row.map((cell, cellIndex) => (
+                      <td key={cellIndex}>{cell}</td>
+                    ))}
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      ))}
     </div>
   );
 }
