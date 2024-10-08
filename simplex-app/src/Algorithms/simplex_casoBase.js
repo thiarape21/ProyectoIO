@@ -2,46 +2,45 @@
 // caso basico 
 
 
-// TODO: hacer que se vean las operaciones que se realizan en cada iteracion 
+
 // TODO: retorne cuando es no acotado 
-// TODO: que ponga los negativos antes de entrar 
+
 
 // *programa asume 1 que la expresion ya esta convertida en negativos
 
-
-
-
 //** Recibe como parametro la cantidad de variables y restricciones 
 //devuelve la matriz vacia con 0 en donde van los numeros correspondientes del sistema
-export function simplexBasic(vari, res) { //arma la matrix segun la cantidad de restricciones y variables
-    let matrix = [];
-    let rows = res + 2;
-    let colums = vari + res + 4;
+//arma la matrix segun la cantidad de restricciones y variables y cuantas varaibles artificial hay
+export function simplexBasic(vari, res, arti) {
+    const matrix = [];
+    const rows = res + 3;
+    const colums = vari + res + arti + 4;
+    matrix[0] = construirArray(vari, res, arti);
 
-    for (let i = 0; i < rows; i++) {
-        if (i === 0) {
-            matrix[0] = construirArray(vari, res);
+    for (let i = 1; i < rows; i++) {
+        matrix[i] = new Array(colums).fill(0);
+        matrix[i][0] = i - 1;
+        if (i === 1) {
+            matrix[i][1] = "w";
+        } else if (i === 2) {
+            matrix[i][1] = "z";
         } else {
-            matrix[i] = [];
-            for (let j = 0; j < colums; j++) {
-                if (j === 0) {
-                    matrix[i][j] = i - 1;
-                } else if (i === 1 && j === 1) {
-                    matrix[1][1] = "z";
-                } else if (j === 1 && i > 1) {
-                    matrix[i][1] = `s${vari + i - 1}`;
-                } else {
-                    matrix[i][j] = 0;
-                }
+
+            if (arti > 0 && i > 3) {
+                matrix[i][1] = `a${vari + res + i - 3}`;
+                arti--;
+            } else {
+                matrix[i][1] = `s${vari + i - 2}`;
             }
         }
     }
+
     return matrix;
 }
 
 
 // Necesita la cantidad de variables y restricciones
-function construirArray(vari, res) { //! hace el encabezado de la matrix y el costado de la matriz del caso base
+export function construirArray(vari, res, arti) { //! hace el encabezado de la matrix y el costado de la matriz del caso base
     let array = [];
     array.push("i");
     array.push("BVH");
@@ -54,6 +53,13 @@ function construirArray(vari, res) { //! hace el encabezado de la matrix y el co
         array.push(`s${vari + j}`);
     }
 
+    if (arti > 0) {
+        for (let k = 0; k < arti; k++) {
+            array.push(`a${vari + res + k + 1}`);
+        }
+    }
+
+
     array.push("RHS");
     array.push("Radios");
     return array;
@@ -62,7 +68,7 @@ function construirArray(vari, res) { //! hace el encabezado de la matrix y el co
 
 // tiene que entrarle un sistema de ecuaciones  para poder remplazarlo en la matriz que se contruyo
 //devuelve la matrix armada
-function llenarSistemaEnMatriz(matriz, sistema) {
+export function llenarSistemaEnMatriz(matriz, sistema) {
 
     for (let i = 0; i < sistema.length; i++) {
         let ecuacion = sistema[i];
@@ -91,11 +97,19 @@ function llenarSistemaEnMatriz(matriz, sistema) {
 */
 //! aqui es el no acotado
 //!puede ser un problema a la hora de desplegar los datos 
-function encontrarIndiceMenorValorFilaZ(matriz) {
+export function encontrarIndiceMenorValorFilaZ(matriz, arti) {
     let filaZ = matriz[1];
-    let valores = filaZ.slice(2, -1);
+    let valores = [];
+    if (arti === 0) {
+        valores = filaZ.slice(2, -1);
+    }
+    else {
+        valores = filaZ.slice(2, -2);
+    }
+
     let menorValor = Math.min(...valores.filter(valor => typeof valor === 'number'));
-    
+
+
     if (menorValor < 0) {
         const indiceColumnaRadio = matriz[0].indexOf('Radios');
         let radios = matriz.slice(1).map(fila => fila[indiceColumnaRadio]);
@@ -106,42 +120,49 @@ function encontrarIndiceMenorValorFilaZ(matriz) {
             console.log("Problema no acotado: todos los radios son +INF y hay valores negativos en la fila z.");
             return -2; // Indicador de problema no acotado  si encuentra empate  lo manda a 
         }
-
         let indiceMenorValor = valores.indexOf(menorValor);
+
         return indiceMenorValor + 2;// ajuste del tamaño real de la matriz
+
+
     }
     else {
         return -1; //! si no encuentra un numero negativo retorna -1 
     }
+
+
 }
 
 
 
 // Función para calcular los valores en la columna de 'Radios'
 //recibe la matriz  armada y calcula los radios 
-function calcularRadios(matriz) {
-    let columnaIndiceMenor = encontrarIndiceMenorValorFilaZ(matriz);
-    let indiceColumnaRHS = matriz[1].length;
-    matriz[1][indiceColumnaRHS - 1] = 'N/A'
+export function calcularRadios(matriz, arti) {
+    const columnaIndiceMenor = encontrarIndiceMenorValorFilaZ(matriz, arti);
+    const indiceColumnaRHS = matriz[1].length - 2; 
+    const indiceResultado = indiceColumnaRHS + 1; 
 
-
-    for (let i = 2; i < matriz.length; i++) {
-        let valorColumna = matriz[i][columnaIndiceMenor];
-        let rhs = matriz[i][indiceColumnaRHS - 2];
-
-        if (valorColumna === 0) {
-            matriz[i][indiceColumnaRHS - 1] = '+INF';
-        } else if ((rhs < 0 && valorColumna > 0) || (rhs < 0 && valorColumna < 0)) { //! revisar si esta condicion si existe los dos negativos
-            matriz[i][indiceColumnaRHS - 1] = '+INF';
-        } else if (valorColumna < 0) {
-            matriz[i][indiceColumnaRHS - 1] = '+INF';
-        } else {
-            matriz[i][indiceColumnaRHS - 1] = rhs / valorColumna;
-        }
+   
+    matriz[1][indiceResultado] = 'N/A';
+    if (arti !== 0) {
+        matriz[2][indiceResultado] = 'N/A';
     }
 
+    
+    const filaInicio = (arti === 0) ? 2 : 3;
+
+    for (let i = filaInicio; i < matriz.length; i++) {
+        const valorColumna = matriz[i][columnaIndiceMenor];
+        const rhs = matriz[i][indiceColumnaRHS];
+        if (valorColumna === 0 || rhs < 0) {
+            matriz[i][indiceResultado] = '+INF';
+        } else {
+            matriz[i][indiceResultado] = rhs / valorColumna;
+        }
+    }
     return matriz;
 }
+
 
 
 //enntra la matriz  calcula el menor indice para sacar cual de los radios usar
@@ -156,12 +177,12 @@ Qué vamos a hacer si tenemos un empate en los radios
 • Si f3, f7 → saque f3
 
  */
-function encontrarIndiceColumnaMenorRadios(matriz) {
+export function encontrarIndiceColumnaMenorRadios(matriz) {
 
     const indiceColumnaRadio = matriz[0].indexOf('Radios');
     if (indiceColumnaRadio === -1) {
         throw new Error("'Radios' no se encuentra en la matriz");
-    } 
+    }
     let radios = matriz.slice(1).map(fila => fila[indiceColumnaRadio]);
 
     let valoresRadios = radios.map(valor => {
@@ -172,46 +193,46 @@ function encontrarIndiceColumnaMenorRadios(matriz) {
     });
 
     let menorValor = Math.min(...valoresRadios);
-     // Buscar todos los índices donde el menor valor se encuentra
-     let indicesMenoresValores = [];
-     valoresRadios.forEach((valor, indice) => {
-         if (valor === menorValor) {
-             indicesMenoresValores.push(indice + 1); // Sumar 1 para ajustar el índice a la matriz original
-         }
-     });
- 
-     // Si hay más de un índice, devolver la lista de índices, sino, el primero
-     if (indicesMenoresValores.length > 1) {
-         return extraerBVS(matriz,indicesMenoresValores);
-     } else {
-         return indicesMenoresValores[0]; // Devuelve solo el primer índice si no hay repetidos
-     }    
-    
+    // Buscar todos los índices donde el menor valor se encuentra
+    let indicesMenoresValores = [];
+    valoresRadios.forEach((valor, indice) => {
+        if (valor === menorValor) {
+            indicesMenoresValores.push(indice + 1); // Sumar 1 para ajustar el índice a la matriz original
+        }
+    });
+
+    // Si hay más de un índice, devolver la lista de índices, sino, el primero
+    if (indicesMenoresValores.length > 1) {
+        return extraerBVS(matriz, indicesMenoresValores);
+    } else {
+        return indicesMenoresValores[0]; // Devuelve solo el primer índice si no hay repetidos
+    }
+
 
 }
 
 
-function extraerBVS(matrix, indiceMenores){
+export function extraerBVS(matrix, indiceMenores) {
     console.log('Hay empate en la variable saliente,indices: ');
     console.table(indiceMenores);
     let variableSeleccionada = 0;
     let menorIndice = Infinity;
 
-   
-    indiceMenores.forEach(indice=>{//la fila es: el elemento 1 de los indices menores en la matrix y la columna 1
+
+    indiceMenores.forEach(indice => {//la fila es: el elemento 1 de los indices menores en la matrix y la columna 1
         let variable = matrix[indice][1];// devuelve la variable exacta
-        if (variable.startsWith('x')){
+        if (variable.startsWith('x')) {
             let subindice = parseInt(variable.slice(1)); // Extraer el número de la variable
             if (subindice < menorIndice) {
-                variableSeleccionada =  indice; // tendria el numero de indice en matrix grande
+                variableSeleccionada = indice; // tendria el numero de indice en matrix grande
                 menorIndice = subindice;
             }
 
-        }else if (variable.startsWith('s')) {
+        } else if (variable.startsWith('s')) {
             // Si no hay variables 'x', verificamos las 's'
             let subindice = parseInt(variable.slice(1)); // Extraer el número de la variable
             if (variableSeleccionada === 0 || subindice < menorIndice) {
-                variableSeleccionada =  indice;
+                variableSeleccionada = indice;
                 menorIndice = subindice;
             }
         }
@@ -227,10 +248,10 @@ function extraerBVS(matrix, indiceMenores){
 //** Pone el 1 donde debe ser  */
 
 //! aqui hago el cambio en la matriz de las variables entrantes y saliente.
-function convertirfila1(matrix) {
+export function convertirfila1(matrix, arti) {
 
-    let columna = encontrarIndiceMenorValorFilaZ(matrix);
-    let fila = encontrarIndiceColumnaMenorRadios(matrix);
+    let columna = encontrarIndiceMenorValorFilaZ(matrix, arti);
+    let fila = encontrarIndiceColumnaMenorRadios(matrix, arti);
     let variableEntrante = matrix[0][columna];
     // let variableSaliente = matrix[fila][1];
 
@@ -269,7 +290,7 @@ function convertirfila1(matrix) {
 }
 
 //**compara arrays */
-function arraysSonIguales(arr1, arr2) {
+export function arraysSonIguales(arr1, arr2) {
     if (arr1.length !== arr2.length) {
         return false;
     }
@@ -283,8 +304,8 @@ function arraysSonIguales(arr1, arr2) {
 
 
 //** coloca ceros en todos la columna */
-function convertirColumnas0(matriz, filaConUno) {
-    let columna = encontrarIndiceMenorValorFilaZ(matriz);// encuentra el valor de la columna 
+export function convertirColumnas0(matriz, filaConUno, arti) {
+    let columna = encontrarIndiceMenorValorFilaZ(matriz, arti);// encuentra el valor de la columna 
     if (columna === undefined || columna < 0) {
         throw new Error("Índice de columna inválido."); // espera valor valido de columna 
     }
@@ -299,7 +320,6 @@ function convertirColumnas0(matriz, filaConUno) {
         let valorColumna = matriz[i][columna];  // Toma el valor en la columna seleccionada para esta fila
 
         if (valorColumna === 0) {
-            console.log(matriz);
             continue; // ignora si hay un 0 en esa posicion 
 
         } else {
@@ -320,14 +340,14 @@ function convertirColumnas0(matriz, filaConUno) {
 }
 
 export function casoBase(variable, res, sistema) {
-    let matrix1 = simplexBasic(variable, res);
+    let matrix1 = simplexBasic(variable, res, 0);
     let matriz = llenarSistemaEnMatriz(matrix1, sistema);
     let negativo = 0;
     let iteracion = 0;
-    const iteraciones = []; 
+    const iteraciones = [];
 
     while (negativo !== -1) {
-        
+
 
         // Guardar la matriz actual en el array de iteraciones
         iteraciones.push({
@@ -335,17 +355,17 @@ export function casoBase(variable, res, sistema) {
             matriz: JSON.parse(JSON.stringify(matriz)) // Clonar la matriz para evitar referencias
         });
 
-       
-        let matrixConRadios = calcularRadios(matriz);
-        negativo = encontrarIndiceMenorValorFilaZ(matrixConRadios);
+
+        let matrixConRadios = calcularRadios(matriz, 0);
+        negativo = encontrarIndiceMenorValorFilaZ(matrixConRadios, 0);
 
         if (negativo !== -2) {
-            let fila1 = encontrarIndiceColumnaMenorRadios(matriz);
-            let iteracion1 = convertirfila1(matrixConRadios);
+            let fila1 = encontrarIndiceColumnaMenorRadios(matriz, 0);
+            let iteracion1 = convertirfila1(matrixConRadios, 0);
 
-           
+
             let linea = matriz[fila1].slice(2, -1);
-            iteracion1 = convertirColumnas0(iteracion1, linea);
+            iteracion1 = convertirColumnas0(iteracion1, linea, 0);
 
 
             // Guardar la matriz modificada en el array de iteraciones
@@ -354,16 +374,16 @@ export function casoBase(variable, res, sistema) {
                 matriz: JSON.parse(JSON.stringify(iteracion1)) // Clonar la matriz para evitar referencias
             });
 
-            
-            negativo = encontrarIndiceMenorValorFilaZ(iteracion1);
 
-            
+            negativo = encontrarIndiceMenorValorFilaZ(iteracion1, 0);
+
+
             matriz = iteracion1;
             iteracion++;
-        }else if(negativo === -2){
+        } else if (negativo === -2) {
             return "No acotado";
         }
-        
+
         else {
             iteraciones.push({
                 iteracion: iteracion + 1,
@@ -372,7 +392,7 @@ export function casoBase(variable, res, sistema) {
 
         }
     }
-   
+
     return iteraciones;
 }
 

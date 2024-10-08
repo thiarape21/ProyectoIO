@@ -5,7 +5,7 @@ import '../CSS/Data.css';
 function Data() {
   const location = useLocation();
   console.log(location.state); // Agrega esto para verificar los datos recibidos
-  const { objectiveValues, restrictionsValues, variables, restrictions, matrix } = location.state || {};
+  const {  matrix } = location.state || {};
 
   if (!location.state) {
     return <div>No se recibieron datos.</div>;

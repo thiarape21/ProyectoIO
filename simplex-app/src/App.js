@@ -4,12 +4,12 @@ import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import SimplexForm from './components/SimplexForm';
 import SimplexOptions from './components/SimplexOptions';
 import Data from './components/Data';
-import { casoBase} from './Algorithms/simplex_casoBase';
+import { faseUno } from './Algorithms/simplex_dosFases';
 
 
 function App() {
 
-  window.casoBase = casoBase;
+  window.faseUno = faseUno();
  
   return (
     <Router>

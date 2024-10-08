@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import '../CSS/Form.css';
 import { casoBase } from '../Algorithms/simplex_casoBase';
+import { faseUno } from '../Algorithms/simplex_dosFases';
 
 function SimplexForm() {
   const location = useLocation();
@@ -49,7 +50,7 @@ function SimplexForm() {
 
   // Función para manejar el cambio del operador de las restricciones
   const handleOperatorChange = (index, value) => {
-    if (index >= 0 && index < restrictionOperators.length) {
+    if (index >= 0 ) {
       const newOperators = [...restrictionOperators];
       newOperators[index] = value;
       setRestrictionOperators(newOperators);
@@ -90,11 +91,25 @@ function SimplexForm() {
       }
 
     }
+    
     return matrix;
   };
 
 
- 
+ const contarArtificiales= () =>{
+    let conta=0;
+    restrictionOperators.forEach((elem) => {
+      if (elem === "=" || elem === ">="){
+        conta++;
+      }
+    });
+    return conta;
+ }
+
+ const convertToMatrixDosFases = () =>{
+    
+
+ }
 
   return (
     <div className="form-container">
@@ -153,9 +168,11 @@ function SimplexForm() {
           type="button"
           className="submit-button"
           onClick={() => {
-            const sistema=convertToMatrix();
-            const matrix = casoBase(parseInt(variables),parseInt(restrictions), sistema );
-           navigate('/data', { state: { objectiveValues, restrictionsValues, variables, restrictions, matrix} }); // Redirigir a la página de Data con los datos necesarios 
+           // const sistema=convertToMatrix();
+            const faseUno1= faseUno();
+            console.table(faseUno1);
+          //  const matrix = casoBase(parseInt(variables),parseInt(restrictions), sistema );
+          // navigate('/data', { state: { objectiveValues, restrictionsValues, variables, restrictions, matrix} }); // Redirigir a la página de Data con los datos necesarios 
           }}
         >
           Continuar
