@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import '../CSS/Form.css';
 import { casoBase } from '../Algorithms/simplex_casoBase';
-import { faseUno } from '../Algorithms/simplex_dosFases';
+//import { faseUno } from '../Algorithms/simplex_dosFases';
 
 function SimplexForm() {
   const location = useLocation();
@@ -14,7 +14,7 @@ function SimplexForm() {
   const [restrictionsValues, setRestrictionsValues] = useState(
     Array(restrictions).fill().map(() => Array(variables).fill(0))
   );
- 
+
   const [restrictionOperators, setRestrictionOperators] = useState(
     Array(restrictions).fill('≤')
   );
@@ -50,7 +50,7 @@ function SimplexForm() {
 
   // Función para manejar el cambio del operador de las restricciones
   const handleOperatorChange = (index, value) => {
-    if (index >= 0 ) {
+    if (index >= 0) {
       const newOperators = [...restrictionOperators];
       newOperators[index] = value;
       setRestrictionOperators(newOperators);
@@ -60,7 +60,7 @@ function SimplexForm() {
   };
 
   // Función para convertir los datos ingresados en una matriz para el algoritmo Simplex
-  const convertToMatrix = () => {
+  const convertToMatrix = () => {//casos basicos de max
     objectiveValues.push(0);
     const newValues = [];
     const matrix = [];
@@ -74,7 +74,7 @@ function SimplexForm() {
         if (i === 0 && j >= variables) {// fila de la z 
           matrix[i][j] = 0;
         }
-        else if(i === 0 && j < variables){
+        else if (i === 0 && j < variables) {
           matrix[i][j] = newValues[i][j] * -1;
 
         }
@@ -91,25 +91,78 @@ function SimplexForm() {
       }
 
     }
-    
+
     return matrix;
   };
 
 
- const contarArtificiales= () =>{
-    let conta=0;
+  const contarArtificiales = () => {
+    let conta = 0;
     restrictionOperators.forEach((elem) => {
-      if (elem === "=" || elem === ">="){
+      if (elem === "=" || elem === ">=") {
         conta++;
       }
     });
     return conta;
- }
+  }
+  //! aspectos al tomar encuenta , si son >= <= o =
+  const convertToMatrixDosFases = () => {
+    objectiveValues.push(0);//casos de min 
+    const newValues = [];
+    const matrix = [];//!hay que pushear la linea w primero
+    newValues.push(objectiveValues);
+    restrictionsValues.forEach((value) => newValues.push(value));
+    const columna = parseInt(restrictionsValues[0].length) + parseInt(restrictions) + parseInt(contarArtificiales());
+    const arti = parseInt(variables) + parseInt(restrictions);
 
- const convertToMatrixDosFases = () =>{
-    
+    for (let i = 0; i < newValues.length ; i++) {
+      matrix[i] = [];
+      for (let j = 0; j < columna; j++) {
+        if ((i === 0 && j < arti) || (i === 0 && j === arti)) {
+          matrix[i][j] = 0;
+        }
+        else if (i === 0 && j >= arti && j !== columna) {
+          matrix[i][j] = 1;
+        }
+        else if (i === 1 && j >= variables) {// fila de la z 
+          matrix[i][j] = 0;
+        }
+        else if (i === 1 && j < variables) {
+          matrix[i][j] = newValues[i][j] * -1;
 
- }
+        }
+        else if (i > 1 && j >= variables) { // filas de las restricciones
+          matrix[i][j] = 0;
+          if (restrictionOperators[i - 2] === "<=") {
+            matrix[i][variables - 1 + i] = 1;
+            if (j === columna - 1) { // RHS
+              matrix[i][j] = newValues[i][restrictionsValues[0].length - 1];
+            }
+          }
+          else if (restrictionOperators[i - 2] === ">=") {
+            matrix[i][variables - 1 + i] = -1;
+            matrix[i][variables - 1 + i + restrictions - 1] = 1;
+            if (j === columna - 1) { // RHS
+              matrix[i][j] = newValues[i][restrictionsValues[0].length - 1];
+            }
+          }
+          else if (restrictionOperators[i - 2] === "="){
+            matrix[i][variables - 1 + i + restrictions - 1] = 1;
+            if (j === columna - 1) { // RHS
+              matrix[i][j] = newValues[i][restrictionsValues[0].length - 1];
+            }
+          }
+
+        }
+        else {
+          matrix[i][j] = newValues[i][j];
+        }
+      }
+
+    }
+
+    return matrix
+  }
 
   return (
     <div className="form-container">
@@ -168,11 +221,12 @@ function SimplexForm() {
           type="button"
           className="submit-button"
           onClick={() => {
-           // const sistema=convertToMatrix();
-            const faseUno1= faseUno();
-            console.table(faseUno1);
-          //  const matrix = casoBase(parseInt(variables),parseInt(restrictions), sistema );
-          // navigate('/data', { state: { objectiveValues, restrictionsValues, variables, restrictions, matrix} }); // Redirigir a la página de Data con los datos necesarios 
+           // const sistema = convertToMatrixDosFases();
+               const sistema=convertToMatrix();
+            // const faseUno1= faseUno();
+            console.table(sistema);
+              const matrix = casoBase(parseInt(variables),parseInt(restrictions), sistema );
+                navigate('/data', { state: { objectiveValues, restrictionsValues, variables, restrictions, matrix} }); // Redirigir a la página de Data con los datos necesarios 
           }}
         >
           Continuar

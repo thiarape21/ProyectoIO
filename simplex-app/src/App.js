@@ -1,22 +1,14 @@
-import './App.css'; 
 import React from 'react';
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import SimplexForm from './components/SimplexForm';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import SimplexOptions from './components/SimplexOptions';
-import Data from './components/Data';
-import { faseUno } from './Algorithms/simplex_dosFases';
-
+import SimplexForm from './components/SimplexForm';
 
 function App() {
-
-  window.faseUno = faseUno();
- 
   return (
     <Router>
       <Routes>
         <Route path="/" element={<SimplexOptions />} />
         <Route path="/simplex-form" element={<SimplexForm />} />
-        <Route path="/data" element={<Data/>}/>
       </Routes>
     </Router>
   );
