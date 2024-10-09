@@ -9,7 +9,7 @@ import { faseUno } from './Algorithms/simplex_dosFases';
 
 function App() {
 
-  window.faseUno = faseUno();
+ // window.faseUno = faseUno();
  
   return (
     <Router>

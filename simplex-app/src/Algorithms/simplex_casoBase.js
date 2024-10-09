@@ -11,7 +11,7 @@
 //** Recibe como parametro la cantidad de variables y restricciones 
 //devuelve la matriz vacia con 0 en donde van los numeros correspondientes del sistema
 //arma la matrix segun la cantidad de restricciones y variables y cuantas varaibles artificial hay
-export function simplexBasic(vari, res, arti) {
+export function simplexBasic(vari, res, arti) {//! aqui tiene que ser armar la matrix con el gran M
     const matrix = [];
     const rows = res + 3;
     const colums = vari + res + arti + 4;
@@ -21,7 +21,7 @@ export function simplexBasic(vari, res, arti) {
         matrix[i] = new Array(colums).fill(0);
         matrix[i][0] = i - 1;
         if (i === 1) {
-            matrix[i][1] = "w";
+            matrix[i][1] = "w";//!corregir este si no es dos fases no tiene sentido la w
         } else if (i === 2) {
             matrix[i][1] = "z";
         } else {
