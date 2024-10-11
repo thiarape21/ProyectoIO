@@ -53,6 +53,7 @@ function SimplexForm() {
     if (index >= 0) {
       const newOperators = [...restrictionOperators];
       newOperators[index] = value;
+      console.log(restrictionOperators);
       setRestrictionOperators(newOperators);
     } else {
       console.error('Índice del operador fuera de rango.');
@@ -105,64 +106,84 @@ function SimplexForm() {
     });
     return conta;
   }
-  //! aspectos al tomar encuenta , si son >= <= o =
-  const convertToMatrixDosFases = () => {
-    objectiveValues.push(0);//casos de min 
-    const newValues = [];
-    const matrix = [];//!hay que pushear la linea w primero
-    newValues.push(objectiveValues);
-    restrictionsValues.forEach((value) => newValues.push(value));
-    const columna = parseInt(restrictionsValues[0].length) + parseInt(restrictions) + parseInt(contarArtificiales());
-    const arti = parseInt(variables) + parseInt(restrictions);
 
-    for (let i = 0; i < newValues.length ; i++) {
-      matrix[i] = [];
-      for (let j = 0; j < columna; j++) {
-        if ((i === 0 && j < arti) || (i === 0 && j === arti)) {
-          matrix[i][j] = 0;
-        }
-        else if (i === 0 && j >= arti && j !== columna) {
-          matrix[i][j] = 1;
-        }
-        else if (i === 1 && j >= variables) {// fila de la z 
-          matrix[i][j] = 0;
-        }
-        else if (i === 1 && j < variables) {
-          matrix[i][j] = newValues[i][j] * -1;
-
-        }
-        else if (i > 1 && j >= variables) { // filas de las restricciones
-          matrix[i][j] = 0;
-          if (restrictionOperators[i - 2] === "<=") {
-            matrix[i][variables - 1 + i] = 1;
-            if (j === columna - 1) { // RHS
-              matrix[i][j] = newValues[i][restrictionsValues[0].length - 1];
-            }
-          }
-          else if (restrictionOperators[i - 2] === ">=") {
-            matrix[i][variables - 1 + i] = -1;
-            matrix[i][variables - 1 + i + restrictions - 1] = 1;
-            if (j === columna - 1) { // RHS
-              matrix[i][j] = newValues[i][restrictionsValues[0].length - 1];
-            }
-          }
-          else if (restrictionOperators[i - 2] === "="){
-            matrix[i][variables - 1 + i + restrictions - 1] = 1;
-            if (j === columna - 1) { // RHS
-              matrix[i][j] = newValues[i][restrictionsValues[0].length - 1];
-            }
-          }
-
-        }
-        else {
-          matrix[i][j] = newValues[i][j];
-        }
+  const contarholgura = () => {
+    let conta = 0;
+    restrictionOperators.forEach((elem) => {
+      if (elem === "<=" || elem === ">=") {//!no esta agarrando bien los simbolos
+        conta++;
       }
-
-    }
-
-    return matrix
+    });
+    return conta;
   }
+
+  //! aspectos al tomar encuenta , si son >= <= o =
+  const convertToMatrixDosFases = () => {   // Casos de min 
+      //  objectiveValues.pop();
+    console.log(restrictionOperators);
+    const columna = parseInt(variables) + parseInt(contarholgura()) + parseInt(contarArtificiales()) + 1 ;
+    const filas= parseInt(restrictions)+2;
+    const arti = parseInt(variables) + parseInt(contarholgura());
+    const newValues = [];
+    const matrix = []; 
+    const empezar = (parseInt(contarArtificiales()) > 0 ? 1 : 0);
+    if (parseInt(contarArtificiales()) !==0){
+    const w = Array.from({ length: columna }, (_, k) => (k >= arti && k < columna - 1 ? 1 : 0));
+    matrix.push(w);}
+    // objectiveValues.push(0); 
+    // newValues.push(objectiveValues);
+
+ //   restrictionsValues.forEach((value) => newValues.push(value));
+  /*   console.log(`new values primero`);
+     */
+    console.log(objectiveValues);
+    console.log(restrictionsValues);
+    console.log(`Cantidad de columnas: ${columna}`);
+    console.log(`Cantidad de filas: ${filas}`);
+    console.log(`Cantidad de artificiales: ${arti}`);
+    console.log(`Cantidad de holgura: ${contarholgura()}`);
+    console.log(`empezar: ${empezar}`);
+ 
+  
+    for (let i = empezar; i < filas; i++) {
+        matrix[i] = [];
+        for (let j = 0; j < columna; j++) {
+            if (i === empezar && j < variables) {
+                matrix[i][j] = objectiveValues[j] * -1;
+            }
+            else if (i === empezar && j >= variables) {
+                matrix[i][j] = 0;
+            }
+            // Filas de restricciones
+            else if (i > empezar && j >= variables) {
+                matrix[i][j] = 0;
+                if (restrictionOperators[i - 3] === "<=") {
+                    matrix[i][variables - 1 + i] = 1;
+                    if (j === columna - 1) { // RHS
+                        matrix[i][j] = restrictionsValues[i-2][restrictionsValues[0].length - 1];
+                    }
+                } else if (restrictionOperators[i - 3] === ">=") {
+                    matrix[i][variables - 1 + i] = -1;
+                    matrix[i][variables - 1 + i + restrictions - 1] = 1;
+                    if (j === columna - 1) { // RHS
+                        matrix[i][j] = restrictionsValues[i-2][restrictionsValues[0].length - 1];
+                    }
+                } else if (restrictionOperators[i - 3] === "=") {
+                    matrix[i][variables - 1 + i + restrictions - 1] = 1;
+                    if (j === columna - 1) { // RHS
+                        matrix[i][j] = restrictionsValues[i-2][restrictionsValues[0].length - 1];
+                    }
+                }
+            } else {
+              console.log(`i: ${i} , el j: ${j}`);
+                matrix[i][j] = restrictionsValues[i-2][j];
+            }
+        }
+    }  
+
+    console.log(matrix);//!las cosas no cuadran por que no me estoy dando cuenta cuando hay variables de holgura 
+    return matrix;
+};
 
   return (
     <div className="form-container">
@@ -221,12 +242,12 @@ function SimplexForm() {
           type="button"
           className="submit-button"
           onClick={() => {
-           // const sistema = convertToMatrixDosFases();
-               const sistema=convertToMatrix();
+            const sistema = convertToMatrixDosFases();
+             //  const sistema=convertToMatrix();
             // const faseUno1= faseUno();
             console.table(sistema);
-              const matrix = casoBase(parseInt(variables),parseInt(restrictions), sistema );
-                navigate('/data', { state: { objectiveValues, restrictionsValues, variables, restrictions, matrix} }); // Redirigir a la página de Data con los datos necesarios 
+            //  const matrix = casoBase(parseInt(variables),parseInt(restrictions), sistema );
+              //  navigate('/data', { state: { objectiveValues, restrictionsValues, variables, restrictions, matrix} }); // Redirigir a la página de Data con los datos necesarios 
           }}
         >
           Continuar

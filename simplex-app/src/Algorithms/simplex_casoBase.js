@@ -13,19 +13,27 @@
 //arma la matrix segun la cantidad de restricciones y variables y cuantas varaibles artificial hay
 export function simplexBasic(vari, res, arti) {//! aqui tiene que ser armar la matrix con el gran M
     const matrix = [];
-    const rows = res + 3;
+    const rows = (arti === 0)? res + 2 : res + 3;
     const colums = vari + res + arti + 4;
     matrix[0] = construirArray(vari, res, arti);
 
     for (let i = 1; i < rows; i++) {
         matrix[i] = new Array(colums).fill(0);
         matrix[i][0] = i - 1;
-        if (i === 1) {
-            matrix[i][1] = "w";//!corregir este si no es dos fases no tiene sentido la w
-        } else if (i === 2) {
-            matrix[i][1] = "z";
-        } else {
 
+        if (arti > 0) { // Si hay variables artificiales (dos fases)
+            if (i === 1) {
+                matrix[i][1] = "w";
+            } else if (i === 2) {
+                matrix[i][1] = "z";
+            } 
+        } else { // Si no hay variables artificiales (una fase)
+            if (i === 1) {
+                matrix[i][1] = "z"; // Asigna "z" directamente en la fila 1 si no hay "w"
+            }
+        }
+
+        if (i > 1) {
             if (arti > 0 && i > 3) {
                 matrix[i][1] = `a${vari + res + i - 3}`;
                 arti--;
@@ -34,10 +42,10 @@ export function simplexBasic(vari, res, arti) {//! aqui tiene que ser armar la m
             }
         }
     }
-
+     console.log('asi se ve la matrix armada');
+     console.table(matrix);
     return matrix;
 }
-
 
 // Necesita la cantidad de variables y restricciones
 export function construirArray(vari, res, arti) { //! hace el encabezado de la matrix y el costado de la matriz del caso base
