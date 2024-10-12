@@ -66,7 +66,7 @@ function SimplexOptions() {
 
         {error && <p style={{ color: 'red' }}>{error}</p>}
 
-        <button type="submit">Resolver</button>
+        <button type="submit">Continuar</button>
       </form>
     </div>
   );

@@ -23,6 +23,8 @@ function SimplexForm() {
     Array(restrictions).fill('≤')
   );
 
+  const [errorMessage, setErrorMessage] = useState('');
+
   // Función para manejar el cambio de los valores de la función objetivo
   const handleObjectiveChange = (index, value) => {
     if (index >= 0) {
@@ -59,6 +61,34 @@ function SimplexForm() {
     } else {
       console.error('Índice del operador fuera de rango.');
     }
+  };
+
+  const validateForm = () => {
+    let isValid = true;
+    let errorMessage = '';
+
+    // Verificar si hay algún campo vacío en la función objetivo
+    if (objectiveValues.some(val => isNaN(val) || val === null || val === "")) {
+      isValid = false;
+      errorMessage = 'Completa todos los campos de la función objetivo.';
+    }
+
+    // Verificar si hay algún campo vacío en las restricciones
+    restrictionsValues.forEach((row, rowIndex) => {
+      if (row.some(val => isNaN(val) || val === null || val === "")) {
+        isValid = false;
+        errorMessage = `Completa todos los campos de las restricciones (fila ${rowIndex + 1}).`;
+      }
+    });
+
+    // Verificar si los valores de RHS en las restricciones están completos
+    if (restrictionsValues.some(row => isNaN(row[variables]) || row[variables] === null || row[variables] === "")) {
+      isValid = false;
+      errorMessage = 'Por favor, ingresa todos los valores de la parte derecha de las restricciones.';
+    }
+
+    setErrorMessage(errorMessage);
+    return isValid;
   };
 
   // Función para convertir los datos ingresados en una matriz para el algoritmo Simplex
@@ -186,76 +216,77 @@ function SimplexForm() {
     return matrix;
 };
 
-  return (
-    <div className="form-container">
-      <h2>{method} - {objectiveFunction}</h2>
-      <form>
-        {/* Función Objetivo */}
-        <h3>Función Objetivo:</h3>
-        <div className="objective-function">
-          {Array.from({ length: variables }).map((_, index) => (
-            <div key={index} className="input-group">
-              <input
-                type="number"
-                className="variable-input"
-                placeholder={`X${index + 1}`}
-                onChange={(e) => handleObjectiveChange(index, e.target.value)}
-              />
-              {index < variables - 1 && <span className="plus-sign"> + </span>}
-            </div>
-          ))}
-        </div>
-
-        {/* Restricciones */}
-        <h3>Restricciones:</h3>
-        {Array.from({ length: restrictions }).map((_, index) => (
-          <div key={index} className="restriction-row">
-            <div className="restriction-inputs">
-              {Array.from({ length: variables }).map((_, colIndex) => (
-                <input
-                  key={colIndex}
-                  type="number"
-                  className="variable-input"
-                  placeholder={`X${colIndex + 1}`}
-                  onChange={(e) => handleRestrictionChange(index, colIndex, e.target.value)}
-                />
-              ))}
-              <select
-                className="operator-select"
-                value={restrictionOperators[index]}
-                onChange={(e) => handleOperatorChange(index, e.target.value)}
-              >
-                <option value="<=">≤</option>
-                <option value="=">=</option>
-                <option value=">=">≥</option>
-              </select>
-              <input
-                type="number"
-                className="value-input"
-                placeholder="Valor"
-                onChange={(e) => handleRestrictionChange(index, variables, e.target.value)}
-              />
-            </div>
+return (
+  <div className="container">
+    <h2>{method} - {objectiveFunction}</h2>
+    <form>
+      {/* Función Objetivo */}
+      <h3>Función Objetivo:</h3>
+      <div className="input-row">
+        {Array.from({ length: variables }).map((_, index) => (
+          <div key={index} className="input-group">
+            <input
+              type="number"
+              className="variable-input"
+              placeholder={`X${index + 1}`}
+              onChange={(e) => handleObjectiveChange(index, e.target.value)}
+            />
+            {index < variables - 1 && <span className="plus-sign"> + </span>}
           </div>
         ))}
+      </div>
 
-        <button
-          type="button"
-          className="submit-button"
-          onClick={() => {
-         //   const sistema = convertToMatrixDosFases();
-              const sistema=convertToMatrix();
-            // const faseUno1= faseUno();
-            console.table(sistema);
-              const matrix = casoBase(parseInt(variables),parseInt(restrictions), sistema );
-                navigate('/data', { state: { objectiveValues, restrictionsValues, variables, restrictions, matrix} }); // Redirigir a la página de Data con los datos necesarios 
-          }}
-        >
-          Continuar
-        </button>
-      </form>
-    </div>
-  );
+      {/* Restricciones */}
+      <h3>Restricciones:</h3>
+      {Array.from({ length: restrictions }).map((_, index) => (
+        <div key={index} className="restriction-row">
+          <div className="input-row"> {/* Cambié aquí para usar input-row */}
+            {Array.from({ length: variables }).map((_, colIndex) => (
+              <input
+                key={colIndex}
+                type="number"
+                className="variable-input"
+                placeholder={`X${colIndex + 1}`}
+                onChange={(e) => handleRestrictionChange(index, colIndex, e.target.value)}
+              />
+            ))}
+            <select
+              className="operator-select"
+              value={restrictionOperators[index]}
+              onChange={(e) => handleOperatorChange(index, e.target.value)}
+            >
+              <option value="<=">≤</option>
+              <option value="=">=</option>
+              <option value=">=">≥</option>
+            </select>
+            <input
+              type="number"
+              className="value-input"
+              placeholder="Valor"
+              onChange={(e) => handleRestrictionChange(index, variables, e.target.value)}
+            />
+          </div>
+        </div>
+      ))}
+
+{errorMessage && <p className="error-message">{errorMessage}</p>}
+
+<button
+  type="button"
+  className="submit-button"
+  onClick={() => {
+    if (validateForm()) {
+      const sistema = convertToMatrix();
+      const matrix = casoBase(parseInt(variables), parseInt(restrictions), sistema);
+      navigate('/data', { state: { objectiveValues, restrictionsValues, variables, restrictions, matrix } });
+    }
+  }}
+>
+  Resolver
+</button>
+</form>
+</div>
+);
 }
 
 export default SimplexForm;

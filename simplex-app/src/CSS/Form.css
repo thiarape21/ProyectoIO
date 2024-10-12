@@ -1,115 +1,143 @@
 body {
-    margin: 0;
-    padding: 0;
-    font-family: 'Roboto', sans-serif;
-    background-color: #f5f5f5;
-    min-height: 100vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
+  margin: 0;
+  padding: 0;
+  font-family: 'Roboto', sans-serif;
+  background-color: #f5f5f5;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.container {
+  width: 100%;
+  max-width: 1400px; 
+  margin: 0 auto;
+  padding: 30px;
+  background-color: #ffffff; /* Fondo blanco para el cuadro */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  box-sizing: border-box;
+  border-radius: 25px;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1); /* Añade sombra para destacar el cuadro */
+}
+
+h2 {
+  font-size: 2.2rem;
+  color: #333;
+  margin-bottom: 30px;
+}
+
+form {
+  width: 100%;
+  max-width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+h3 {
+  color: #00796b;
+  font-size: 1.5rem;
+  margin-bottom: 10px;
+  text-align: left;
+}
+
+.input-row, .restriction-row {
+  display: flex; 
+  justify-content: center; 
+  align-items: center; 
+  gap: 10px; /* Espacio entre los inputs */
+  margin-bottom: 20px; 
+}
+
+.variable-input, .operator-select {
+  width: 80px; /* Ancho de los inputs */
+  height: 40px; /* Alto de los inputs */
+  margin: 10px; /* Margen alrededor */
+  border: 1px solid #ddd; /* Borde del input */
+  border-radius: 8px; /* Esquinas redondeadas */
+  text-align: center; /* Centra el texto */
+  font-size: 1rem; /* Tamaño de fuente */
+  background-color: #f9f9f9; /* Fondo del input */
+}
+
+
+input[type="number"], select {
+  width: 80px;
+  height: 40px;
+  margin: 10px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  text-align: center;
+  font-size: 1rem;
+  background-color: #f9f9f9;
+}
+
+input[type="number"]:focus, select:focus {
+  border-color: #009688;
+  outline: none;
+  box-shadow: 0 0 8px rgba(0, 150, 136, 0.2);
+}
+
+button {
+  margin-top: 20px;
+  padding: 12px 30px;
+  background-color: #009688;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 1.2rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+button:hover {
+  background-color: #00796b;
+}
+
+.restriction-row {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 20px;
+  flex-wrap: nowrap; /* Mantiene las restricciones en fila */
+}
+
+.error-message {
+  color: red;
+
+}
+
+/* Ajustes para pantallas pequeñas */
+@media screen and (max-width: 768px) {
+  .restriction-row, .input-row {
+      flex-wrap: wrap; /* Alinea verticalmente si no cabe en la pantalla */
   }
-  
-  .container {
-    max-width: 900px;
-    margin: 20px auto;
-    padding: 20px;
-    background-color: #ffffff;
-    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
-    border-radius: 12px;
-    box-sizing: border-box;
-  }
-  
-  h2 {
-    font-size: 2.2rem;
-    color: #333;
-    margin-bottom: 30px;
-  }
-  
-  form {
-    width: 100%;
-  }
-  
-  h3 {
-    color: #00796b;
-    font-size: 1.5rem;
-    margin-bottom: 10px;
-    text-align: left;
-  }
-  
+
   input[type="number"], select {
-    width: 80px;
-    height: 40px;
-    margin: 10px;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    text-align: center;
-    font-size: 1rem;
-    background-color: #f9f9f9;
-  }
-  
-  input[type="number"]:focus, select:focus {
-    border-color: #009688;
-    outline: none;
-    box-shadow: 0 0 8px rgba(0, 150, 136, 0.2);
-  }
-  
-  button {
-    margin-top: 20px;
-    padding: 12px 30px;
-    background-color: #009688;
-    color: white;
-    border: none;
-    border-radius: 8px;
-    font-size: 1.2rem;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-  }
-  
-  button:hover {
-    background-color: #00796b;
-  }
-  
-  .restriction-row {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    align-items: center;
-    margin-bottom: 20px;
-  }
-  
-  .restriction-row input {
-    margin: 5px;
-  }
-  
-  .restriction-row select {
-    margin: 5px;
-  }
-  
-  @media screen and (max-width: 768px) {
-    .restriction-row {
-      flex-direction: column;
-    }
-  
-    input[type="number"], select {
       width: 100%;
       margin: 5px 0;
-    }
-  
-    button {
+  }
+
+  button {
       font-size: 1rem;
       padding: 10px 20px;
-    }
   }
-  
-  @media screen and (max-width: 480px) {
-    h2 {
+}
+
+@media screen and (max-width: 480px) {
+  h2 {
       font-size: 1.8rem;
-    }
-  
-    button {
+  }
+
+  button {
       padding: 8px 20px;
       font-size: 0.9rem;
-    }
   }
-  
+}
