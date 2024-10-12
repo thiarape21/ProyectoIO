@@ -268,7 +268,7 @@ return (
   onClick={() => {
     if (validateForm()) {
       const sistema = convertToMatrix();
-      const matrix = casoBase(parseInt(variables), parseInt(restrictions), sistema);
+      const matrix = casoBase(parseInt(variables), parseInt(restrictions), sistema,parseInt(contarArtificiales()));
       navigate('/data', { state: { objectiveValues, restrictionsValues, variables, restrictions, matrix } });
     }
   }}

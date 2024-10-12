@@ -353,13 +353,14 @@ export function casoBase(variable, res, sistema, arti) {
 
     let matriz;
 
-    if (arti > 0) {
+    if (arti === 0) {
         let matrix1 = simplexBasic(variable, res, 0);
-         matriz = llenarSistemaEnMatriz(matrix1, sistema);
+        matriz = llenarSistemaEnMatriz(matrix1, sistema);
+        console.log(matriz);
     }
 
-    else{
-         matriz = sistema;
+    else {
+        matriz = sistema;
     }
 
     let negativo = 0;
