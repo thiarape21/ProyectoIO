@@ -65,22 +65,19 @@ function encogerMatriz(matriz) {
     return matriz;
 }
 
+export function separarMatriz(matrix){
+    
+
+}
 
 
 //! tiene que entrarle  sistema , var, res y arti
 export function faseUno(sistema, vari , res, arti) {// minimizacion 
-    let sistema1 = [
-        [0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 'N/A'],
-        [-2, 2, 1, 1, 0, 0, 0, 0, 0, 0, 'N/A'],
-        [1, 2, 1, 1, 1, 0, 0, 0, 0, 2, 0],
-        [1, -1, 1, 5, 0, -1, 0, 1, 0, 4, 0],
-        [2, -1, 1, 0, 0, 0, -1, 0, 1, 2, 0]
-    ]; //ejemplo de min con dos fases en fase 1 asumiendo que entran negativos y la linea w 
 
 
 
-    let matrix1 = simplexBasic(4, 3, 2);
-    let matrix2 = llenarSistemaEnMatriz(matrix1, sistema1);
+    let matrix1 = simplexBasic(vari, res, arti);
+    let matrix2 = llenarSistemaEnMatriz(matrix1, sistema);
     let matriz = cambiarA(matrix2);
     let negativo = 0;
     let iteracion = 0;

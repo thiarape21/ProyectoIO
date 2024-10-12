@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import '../CSS/Form.css';
 import { casoBase } from '../Algorithms/simplex_casoBase';
-//import { faseUno } from '../Algorithms/simplex_dosFases';
+import { faseUno } from '../Algorithms/simplex_dosFases';
 
 // Aquí agregas los imports del método de la Gran M y el de dos fases
 // import { granM } from '../Algorithms/simplex_granM';
@@ -20,7 +20,7 @@ function SimplexForm() {
   );
 
   const [restrictionOperators, setRestrictionOperators] = useState(
-    Array(restrictions).fill('≤')
+    Array(parseInt(restrictions)).fill('<=')
   );
 
   const [errorMessage, setErrorMessage] = useState('');
@@ -52,15 +52,14 @@ function SimplexForm() {
   };
   
   // Función para manejar el cambio del operador de las restricciones
-  const handleOperatorChange = (index, value) => {
-    if (index >= 0) {
-      const newOperators = [...restrictionOperators];
-      newOperators[index] = value;
-      console.log(restrictionOperators);
-      setRestrictionOperators(newOperators);
-    } else {
-      console.error('Índice del operador fuera de rango.');
-    }
+  const handleOperatorChange = (index, newOperator) => {
+    // Crear una copia del array para no mutar el estado directamente
+    const updatedOperators = [...restrictionOperators];
+    // Cambiar solo el valor en la posición correspondiente
+    updatedOperators[index] = newOperator || '<=';
+    // Actualizar el estado con la nueva copia
+    setRestrictionOperators(updatedOperators);
+    console.log("Como se ve:", updatedOperators); // Verificar cómo se ve el array después del cambio
   };
 
   const validateForm = () => {
@@ -133,88 +132,80 @@ function SimplexForm() {
     restrictionOperators.forEach((elem) => {
       if (elem === "=" || elem === ">=") {
         conta++;
+
       }
     });
     return conta;
   }
 
   const contarholgura = () => {
-    let conta = 0;
+    let holgura = 0;
     restrictionOperators.forEach((elem) => {
-      if (elem === "<=" || elem === ">=") {//!no esta agarrando bien los simbolos
-        conta++;
+      if (elem === ">=" || elem === "<=") {
+        holgura++;
       }
     });
-    return conta;
+    //
+    return holgura;
   }
+
+
 
   //! aspectos al tomar encuenta , si son >= <= o =
   const convertToMatrixDosFases = () => {   // Casos de min 
-      //  objectiveValues.pop();
-    console.log(restrictionOperators);
-    const columna = parseInt(variables) + parseInt(contarholgura()) + parseInt(contarArtificiales()) + 1 ;
-    const filas= parseInt(restrictions)+2;
-    const arti = parseInt(variables) + parseInt(contarholgura());
-    const newValues = [];
-    const matrix = []; 
+    const holgura = parseInt(contarholgura());
+    const variables1 = parseInt(variables);
+    const columna = variables1 + holgura + parseInt(contarArtificiales()) + 1;
+    const filas = parseInt(restrictions) + 2;
+    const arti = variables1 + parseInt(contarholgura());
+    const matrix = [];
     const empezar = (parseInt(contarArtificiales()) > 0 ? 1 : 0);
-    if (parseInt(contarArtificiales()) !==0){
-    const w = Array.from({ length: columna }, (_, k) => (k >= arti && k < columna - 1 ? 1 : 0));
-    matrix.push(w);}
-    // objectiveValues.push(0); 
-    // newValues.push(objectiveValues);
+    if (parseInt(contarArtificiales()) !== 0) {
+      const w = Array.from({ length: columna }, (_, k) => (k >= arti && k < columna - 1 ? 1 : 0));
+      matrix.push(w);
+    }
 
- //   restrictionsValues.forEach((value) => newValues.push(value));
-  /*   console.log(`new values primero`);
-     */
-    console.log(objectiveValues);
-    console.log(restrictionsValues);
-    console.log(`Cantidad de columnas: ${columna}`);
-    console.log(`Cantidad de filas: ${filas}`);
-    console.log(`Cantidad de artificiales: ${arti}`);
-    console.log(`Cantidad de holgura: ${contarholgura()}`);
-    console.log(`empezar: ${empezar}`);
- 
-  
     for (let i = empezar; i < filas; i++) {
-        matrix[i] = [];
-        for (let j = 0; j < columna; j++) {
-            if (i === empezar && j < variables) {
-                matrix[i][j] = objectiveValues[j] * -1;
+      matrix[i] = [];
+      for (let j = 0; j < columna; j++) {
+        if (i === empezar) {
+          if (j < variables) {
+            matrix[i][j] = objectiveValues[j] * -1;
+          }
+          else if (j >= variables) {
+            matrix[i][j] = 0;
+          }
+        } else {
+          // Filas de restricciones
+          if (i > empezar && j >= variables) {
+            matrix[i][j] = 0;
+            if (restrictionOperators[i - 2] === "<=") {
+              matrix[i][variables1  + (i-2)] = 1;
+              if (j === columna - 1) { // RHS
+                matrix[i][j] = restrictionsValues[i - 2][restrictionsValues[0].length - 1];
+              }
+            } else if (restrictionOperators[i - 2] === ">=") {
+              matrix[i][variables1  + (i-2)] = -1;
+              matrix[i][variables - 1 + holgura + i - 2] = 1;
+              if (j === columna - 1) { // RHS
+                matrix[i][j] = restrictionsValues[i - 2][restrictionsValues[0].length - 1];
+              }
+            } else if (restrictionOperators[i - 2] === "=") {
+              matrix[i][variables - 1 + holgura + i - 2] = 1;
+              if (j === columna - 1) { // RHS
+                matrix[i][j] = restrictionsValues[i - 2][restrictionsValues[0].length - 1];
+              }
             }
-            else if (i === empezar && j >= variables) {
-                matrix[i][j] = 0;
-            }
-            // Filas de restricciones
-            else if (i > empezar && j >= variables) {
-                matrix[i][j] = 0;
-                if (restrictionOperators[i - 3] === "<=") {
-                    matrix[i][variables - 1 + i] = 1;
-                    if (j === columna - 1) { // RHS
-                        matrix[i][j] = restrictionsValues[i-2][restrictionsValues[0].length - 1];
-                    }
-                } else if (restrictionOperators[i - 3] === ">=") {
-                    matrix[i][variables - 1 + i] = -1;
-                    matrix[i][variables - 1 + i + restrictions - 1] = 1;
-                    if (j === columna - 1) { // RHS
-                        matrix[i][j] = restrictionsValues[i-2][restrictionsValues[0].length - 1];
-                    }
-                } else if (restrictionOperators[i - 3] === "=") {
-                    matrix[i][variables - 1 + i + restrictions - 1] = 1;
-                    if (j === columna - 1) { // RHS
-                        matrix[i][j] = restrictionsValues[i-2][restrictionsValues[0].length - 1];
-                    }
-                }
-            } else {
-              console.log(`i: ${i} , el j: ${j}`);
-                matrix[i][j] = restrictionsValues[i-2][j];
-            }
+          } else {
+            matrix[i][j] = restrictionsValues[i - 2][j];
+          }
         }
-    }  
+      }
+    }
+    console.log(matrix);
 
-    console.log(matrix);//!las cosas no cuadran por que no me estoy dando cuenta cuando hay variables de holgura 
     return matrix;
-};
+  };
 
 return (
   <div className="container">

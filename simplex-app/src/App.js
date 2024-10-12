@@ -10,7 +10,7 @@ function App() {
       <Routes>
         <Route path="/" element={<SimplexOptions />} />
         <Route path="/simplex-form" element={<SimplexForm />} />
-        <Route path="/data" element={<Data />} /> {/* Nueva ruta para el componente Data */}
+        <Route path='/data' element={<Data/>} />;
       </Routes>
     </Router>
   );
