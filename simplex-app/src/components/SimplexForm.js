@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import '../CSS/Form.css';
 import { casoBase } from '../Algorithms/simplex_casoBase';
-import { faseUno } from '../Algorithms/simplex_dosFases';
+import { faseUno , encogerMatriz} from '../Algorithms/simplex_dosFases';
 
 // Aquí agregas los imports del método de la Gran M y el de dos fases
 // import { granM } from '../Algorithms/simplex_granM';
@@ -160,6 +160,7 @@ function SimplexForm() {
     const arti = variables1 + parseInt(contarholgura());
     const matrix = [];
     const empezar = (parseInt(contarArtificiales()) > 0 ? 1 : 0);
+    const resta = (parseInt(contarArtificiales()) > 0 ? 1 : 2);
     if (parseInt(contarArtificiales()) !== 0) {
       const w = Array.from({ length: columna }, (_, k) => (k >= arti && k < columna - 1 ? 1 : 0));
       matrix.push(w);
@@ -180,18 +181,18 @@ function SimplexForm() {
           if (i > empezar && j >= variables) {
             matrix[i][j] = 0;
             if (restrictionOperators[i - 2] === "<=") {
-              matrix[i][variables1  + (i-2)] = 1;
+              matrix[i][variables1 - 1 + i - 2] = 1;
               if (j === columna - 1) { // RHS
                 matrix[i][j] = restrictionsValues[i - 2][restrictionsValues[0].length - 1];
               }
             } else if (restrictionOperators[i - 2] === ">=") {
-              matrix[i][variables1  + (i-2)] = -1;
-              matrix[i][variables - 1 + holgura + i - 2] = 1;
+              matrix[i][variables1 - 1 + i - 2] = -1;
+              matrix[i][(variables1 + holgura -1) + i - 1] = 1;
               if (j === columna - 1) { // RHS
                 matrix[i][j] = restrictionsValues[i - 2][restrictionsValues[0].length - 1];
               }
             } else if (restrictionOperators[i - 2] === "=") {
-              matrix[i][variables - 1 + holgura + i - 2] = 1;
+              matrix[i][(variables1 + holgura -1) + i - 1 ] = 1;
               if (j === columna - 1) { // RHS
                 matrix[i][j] = restrictionsValues[i - 2][restrictionsValues[0].length - 1];
               }
@@ -207,6 +208,7 @@ function SimplexForm() {
     return matrix;
   };
 
+  
 return (
   <div className="container">
     <h2>{method} - {objectiveFunction}</h2>
@@ -267,9 +269,14 @@ return (
   className="submit-button"
   onClick={() => {
     if (validateForm()) {
-      const sistema = convertToMatrix();
+      const sistema = convertToMatrixDosFases();
+     // const fase1 = faseUno(sistema,parseInt(variables) , parseInt(restrictions), parseInt(contarArtificiales()));
+   //   const matrix = casoBase(parseInt(variables), parseInt(restrictions), encogerMatriz(), 0);
+     // console.log(matrix);
+
+/*       const sistema = convertToMatrix();
       const matrix = casoBase(parseInt(variables), parseInt(restrictions), sistema,parseInt(contarArtificiales()));
-      navigate('/data', { state: { objectiveValues, restrictionsValues, variables, restrictions, matrix } });
+      navigate('/data', { state: { objectiveValues, restrictionsValues, variables, restrictions, matrix } }); */
     }
   }}
 >

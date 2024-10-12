@@ -38,7 +38,7 @@ function esFactible(matriz){
     return true ;
 }
 
-function encogerMatriz(matriz) {
+export function encogerMatriz(matriz) {
     const indicesColumnas = [];
 
     matriz[0].forEach((valor, index) => {
@@ -65,10 +65,6 @@ function encogerMatriz(matriz) {
     return matriz;
 }
 
-export function separarMatriz(matrix){
-    
-
-}
 
 
 //! tiene que entrarle  sistema , var, res y arti
@@ -135,9 +131,7 @@ export function faseUno(sistema, vari , res, arti) {// minimizacion
 
     const devuelvo = ( esFactible(matriz)) ? iteraciones : 'no factible' ; //! esto se podria hacer del front end 
 
-    console.log('asi se ve reducida');
-    encogerMatriz(matriz);
-   
+
     return devuelvo;
 
 
