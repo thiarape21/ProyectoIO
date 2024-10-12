@@ -21,20 +21,17 @@ export function simplexBasic(vari, res, arti) {//! aqui tiene que ser armar la m
         matrix[i] = new Array(colums).fill(0);
         matrix[i][0] = i - 1;
 
-        if (arti > 0) { // Si hay variables artificiales (dos fases)
+        if (arti > 0 && i < 2) { // Si hay variables artificiales (dos fases)
             if (i === 1) {
                 matrix[i][1] = "w";
             } else if (i === 2) {
+            console.log(`no entra y el i es : ${i} `);
                 matrix[i][1] = "z";
             } 
-        } else { // Si no hay variables artificiales (una fase)
-            if (i === 1) {
-                matrix[i][1] = "z"; // Asigna "z" directamente en la fila 1 si no hay "w"
-            }
-        }
 
-        if (i > 1) {
-            if (arti > 0 && i > 3) {
+        } 
+        else if (i > 2 ) {
+            if (arti > 0) {
                 matrix[i][1] = `a${vari + res + i - 3}`;
                 arti--;
             } else {
