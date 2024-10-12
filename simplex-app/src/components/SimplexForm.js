@@ -4,6 +4,10 @@ import '../CSS/Form.css';
 import { casoBase } from '../Algorithms/simplex_casoBase';
 import { faseUno } from '../Algorithms/simplex_dosFases';
 
+// Aquí agregas los imports del método de la Gran M y el de dos fases
+// import { granM } from '../Algorithms/simplex_granM';
+// import { faseDosFases } from '../Algorithms/simplex_dosFases';
+
 function SimplexForm() {
   const location = useLocation();
   const navigate = useNavigate();
@@ -34,8 +38,6 @@ function SimplexForm() {
     }
   };
 
-
-
   const handleRestrictionChange = (rowIndex, colIndex, value) => {
     const newValues = [...restrictionsValues];
     if (!newValues[rowIndex]) {
@@ -50,8 +52,7 @@ function SimplexForm() {
 
     setRestrictionsValues(newValues);
   };
-
-
+  
   // Función para manejar el cambio del operador de las restricciones
   const handleOperatorChange = (index, newOperator) => {
     // Crear una copia del array para no mutar el estado directamente
@@ -237,13 +238,12 @@ function SimplexForm() {
           type="button"
           className="submit-button"
           onClick={() => {
-            const sistema = convertToMatrixDosFases();
-            // console.log(restrictionOperators);
-            //    const sistema=convertToMatrix();
-             const faseUno1= faseUno (sistema,parseInt(variables) , parseInt(restrictions), parseInt(contarArtificiales()));
-            // console.table(faseUno1);
-            //   const matrix = casoBase(parseInt(variables),parseInt(restrictions), sistema );
-                //  navigate('/data', { state: { objectiveValues, restrictionsValues, variables, restrictions, matrix} }); // Redirigir a la página de Data con los datos necesarios 
+         //   const sistema = convertToMatrixDosFases();
+              const sistema=convertToMatrix();
+            // const faseUno1= faseUno();
+            console.table(sistema);
+              const matrix = casoBase(parseInt(variables),parseInt(restrictions), sistema );
+                navigate('/data', { state: { objectiveValues, restrictionsValues, variables, restrictions, matrix} }); // Redirigir a la página de Data con los datos necesarios 
           }}
         >
           Continuar
