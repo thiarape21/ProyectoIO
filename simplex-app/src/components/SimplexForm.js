@@ -238,12 +238,13 @@ function SimplexForm() {
           type="button"
           className="submit-button"
           onClick={() => {
-         //   const sistema = convertToMatrixDosFases();
-              const sistema=convertToMatrix();
-            // const faseUno1= faseUno();
-            console.table(sistema);
-              const matrix = casoBase(parseInt(variables),parseInt(restrictions), sistema );
-                navigate('/data', { state: { objectiveValues, restrictionsValues, variables, restrictions, matrix} }); // Redirigir a la página de Data con los datos necesarios 
+            const sistema = convertToMatrixDosFases();
+            const faseUno1= faseUno (sistema,parseInt(variables) , parseInt(restrictions), parseInt(contarArtificiales()));
+              //const sistema=convertToMatrix();
+           
+        //    console.table(sistema);
+         //     const matrix = casoBase(parseInt(variables),parseInt(restrictions), sistema );
+           //     navigate('/data', { state: { objectiveValues, restrictionsValues, variables, restrictions, matrix} }); // Redirigir a la página de Data con los datos necesarios 
           }}
         >
           Continuar
