@@ -87,7 +87,7 @@ function SimplexForm() {
         return;
       }
 
-   //   navigate('/data', { state: {  resultado } }); 
+      navigate('/data', { state: {  resultado } }); 
 
     }
   };

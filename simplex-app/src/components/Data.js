@@ -4,14 +4,15 @@ import '../CSS/Data.css';
 
 function Data() {
   const location = useLocation();
-
   const { resultado } = location.state || {};
-  console.log(resultado); 
+  console.log(resultado);
 
-  if (!location.state) {
+  if (!resultado) {
     return <div className="no-data">No se recibieron datos.</div>;
   }
 
+  // Tomamos la última iteración como solución óptima
+  const ultimaIteracion = resultado[resultado.length - 1]; 
 
   return (
     <div className="datos-container">
@@ -50,18 +51,18 @@ function Data() {
           <thead>
             <tr>
               <th>Variable</th>
-              {Array.from({ length: resultado[0].matriz[0].length - 1 }).map((_, index) => (
-                <th key={`X${index + 1}`}>X{index + 1}</th>
+              {ultimaIteracion.matriz[0].slice(1).map((header, index) => (
+                <th key={index}>{header}</th> // Mostramos cabeceras de variables X
               ))}
               <th>RHS</th> 
             </tr>
           </thead>
           <tbody>
-            {resultado.map((iteracionObj, rowIndex) => (
+            {ultimaIteracion.matriz.map((row, rowIndex) => (
               <tr key={rowIndex}>
                 <td>{rowIndex === 0 ? 'Z' : `Restricción ${rowIndex}`}</td>
-                {iteracionObj.matriz[0].map((value, colIndex) => (
-                  <td key={colIndex}>{value}</td>
+                {row.map((cell, cellIndex) => (
+                  <td key={cellIndex}>{cell}</td>
                 ))}
               </tr>
             ))}
