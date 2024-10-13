@@ -1,6 +1,6 @@
 
 // caso basico 
-import {encogerMatriz} from '../Algorithms/simplex_dosFases';
+import { encogerMatriz } from '../Algorithms/simplex_dosFases';
 
 
 
@@ -14,22 +14,22 @@ import {encogerMatriz} from '../Algorithms/simplex_dosFases';
 //arma la matrix segun la cantidad de restricciones y variables y cuantas varaibles artificial hay
 export function simplexBasic(vari, res, arti, metodo, holgura) {//! aqui tiene que ser armar la matrix con el gran M
     const matrix = [];
-    const rows = (metodo.includes('Caso Base')|| metodo.includes('Gran M')) ? res + 2 : res + 3;
+    const rows = (metodo.includes('Caso Base') || metodo.includes('Gran M')) ? res + 2 : res + 3;
     console.log(metodo);
     console.log(`las filas es : ${rows}`);
-    const colums = vari + holgura + arti + 4 ; //! mas 4 si es dos fases 
+    const colums = vari + holgura + arti + 4; //! mas 4 si es dos fases 
     console.log(`las columnas es: ${colums}`);
     matrix[0] = construirArray(vari, res, arti, holgura);
-    const prueba = (arti > 0 &&  metodo.includes('Dos Fases')) ? 2 : 1;
-    const as = (arti > 0 &&  metodo.includes('Dos Fases')) ? 3 : 2;
-    const ss = (arti > 0 &&  metodo.includes('Dos Fases')) ? 2 : 1;
+    const prueba = (arti > 0 && metodo.includes('Dos Fases')) ? 2 : 1;
+    const as = (arti > 0 && metodo.includes('Dos Fases')) ? 3 : 2;
+    const ss = (arti > 0 && metodo.includes('Dos Fases')) ? 2 : 1;
 
 
     for (let i = 1; i < rows; i++) {
         matrix[i] = new Array(colums).fill(0);
         matrix[i][0] = i - 1;
 
-        if (arti > 0 &&  metodo.includes('Dos Fases')) { // Si hay variables artificiales (dos fases)
+        if (arti > 0 && metodo.includes('Dos Fases')) { // Si hay variables artificiales (dos fases)
             if (i === 1) {
                 matrix[i][1] = "w";
             } else if (i === 2) {
@@ -43,10 +43,10 @@ export function simplexBasic(vari, res, arti, metodo, holgura) {//! aqui tiene q
         }
 
         if (i > prueba) {
-            if (arti > 0 && i > as ) {
+            if (arti > 0 && i > as) {
                 matrix[i][1] = `a${vari + res + i - as}`;
                 arti--;
-            } else if(holgura !== 0) {
+            } else if (holgura !== 0) {
                 matrix[i][1] = `s${vari + i - ss}`;
             }
         }
@@ -66,12 +66,13 @@ export function construirArray(vari, res, arti, holgura) { //! hace el encabezad
         array.push(`x${i}`);
     }
 
-    if( holgura !==0 ){
-    for (let j = 1; j <= holgura; j++) {
-        array.push(`s${vari + j}`);//!es aqui el problema como no todas tienen de holgura  queiro decir el igual , mete una de mas
-    }}
+    if (holgura !== 0) {
+        for (let j = 1; j <= holgura; j++) {
+            array.push(`s${vari + j}`);//!es aqui el problema como no todas tienen de holgura  queiro decir el igual , mete una de mas
+        }
+    }
 
-    if (arti > 0 ) {
+    if (arti > 0) {
         for (let k = 0; k < arti; k++) {
             array.push(`a${vari + res + k + 1}`);
         }
@@ -159,15 +160,19 @@ export function calcularRadios(matriz, arti, metodo) {
     const columnaIndiceMenor = encontrarIndiceMenorValorFilaZ(matriz, arti);
     const indiceColumnaRHS = matriz[1].length - 2;
     const indiceResultado = indiceColumnaRHS + 1;
-
+    let filaInicio;
 
     matriz[1][indiceResultado] = 'N/A';
-    if (arti !== 0) {
+
+    if (arti !== 0 && metodo === 'Dos Fases') {
         matriz[2][indiceResultado] = 'N/A';
+        filaInicio = 3;
     }
 
 
-    const filaInicio = (arti !== 0 && metodo === "Dos Fases") ? 3 : 2;
+    filaInicio = 2;// 3 si es dos fases
+
+    console.log(`fila inicio ${filaInicio}`);
 
     for (let i = filaInicio; i < matriz.length; i++) {
         const valorColumna = matriz[i][columnaIndiceMenor];
@@ -178,6 +183,8 @@ export function calcularRadios(matriz, arti, metodo) {
             matriz[i][indiceResultado] = rhs / valorColumna;
         }
     }
+    console.log('calculo de radios');
+    console.log(matriz);
     return matriz;
 }
 
@@ -270,6 +277,7 @@ export function convertirfila1(matrix, arti) {
 
     let columna = encontrarIndiceMenorValorFilaZ(matrix, arti);
     let fila = encontrarIndiceColumnaMenorRadios(matrix, arti);
+    console.log(`fila que entra ${fila}`)
     let variableEntrante = matrix[0][columna];
     // let variableSaliente = matrix[fila][1];
 
@@ -361,9 +369,9 @@ export function casoBase(variable, res, sistema, arti, holgura) {
 
     let matriz;
 
-    if (arti === 0  ) {
+    if (arti === 0) {
         let matrix1 = simplexBasic(variable, res, 0, 'Caso Base', holgura);
-        matriz = llenarSistemaEnMatriz(matrix1, sistema , holgura);
+        matriz = llenarSistemaEnMatriz(matrix1, sistema, holgura);
         console.log(matriz);
     }
 

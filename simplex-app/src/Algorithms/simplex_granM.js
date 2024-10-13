@@ -112,58 +112,43 @@ export function encontrarIndiceColumnaMayorRadios(matriz) {
     }
 }
 
-
-
 export function granM(sistema, vari, res, arti, holgura) {
-    let sistema1 = [
-        [-2, 2, 1, 1, 0, 0, 0, 'M', 'M', 0, 'N/A'],  // Función objetivo con penalización 'M'
-        [1, 2, 1, 1, 1, 0, 0, 0, 0, 2, 0],           // Restricciones
-        [1, -1, 1, 5, 0, -1, 0, 1, 0, 4, 0], 
-        [2, -1, 1, 0, 0, 0, -1, 0, 1, 2, 0]
-    ];
+    let sistema1 = 
+    [[-2, 2, 1, 1, 0, 0, 0, 'M', 'M', 0, 'N/A'],
+    [1, 2, 1, 1, 1, 0, 0, 0, 0, 2, 0],
+    [1, -1, 1, 5, 0, -1, 0, 1, 0, 4, 0],
+    [2, -1, 1, 0, 0, 0, -1, 0, 1, 2, 0]]
 
     let matrix1 = simplexBasic(4, 3, 2, 'Gran M', 3);
     let matrix2 = llenarSistemaEnMatriz(matrix1, sistema1, 3);
     let matriz = cambiarA(matrix2);
 
+
+    let negativo = 0;
     let iteracion = 0;
     const iteraciones = [];
 
-    // Verificamos si hay variables artificiales
-    const tieneArtificialEnBVS = matriz.some(fila => fila[1].startsWith('a'));
+    while (negativo !== -1) {//TODO cambiar los 2 por la cantidad real de arti
 
-    while (true) {
+
         // Guardar la matriz actual en el array de iteraciones
         iteraciones.push({
             iteracion: iteracion + 1,
             matriz: JSON.parse(JSON.stringify(matriz)) // Clonar la matriz para evitar referencias
         });
 
-        let matrixConRadios =  calcularRadios(matriz, 2, 'Gran M');// cambiar el 2 por arti de verdad
-        let mayorValorFilaZ = encontrarIndiceMayorValorFilaZ(matrixConRadios, 2);  // Buscar mayor en fila Z
 
-        // Verificar si hay algún valor positivo en Z para continuar iterando
-        const filaZ = matriz[1].slice(2, -1);  // Excluimos las primeras columnas
-        const tienePositivosEnZ = filaZ.some(valor => valor > 0);
+        let matrixConRadios = calcularRadios(matriz, 2, 'Gran M');
+        negativo = encontrarIndiceMenorValorFilaZ(matrixConRadios, 2);
 
-        if (!tienePositivosEnZ) {
-            // Si no hay valores positivos y quedan variables artificiales en BVS, la solución no es factible
-            if (tieneArtificialEnBVS) {
-                console.log("Solución no factible: Hay variables artificiales en BVS.");
-                return "Solución no factible";
-            } else {
-                console.log("Proceso completado. No hay más valores positivos en Z.");
-                return iteraciones;
-            }
-        }
-
-        if (mayorValorFilaZ !== -2) {
-            // Buscar el mayor valor de la columna de radios
-            let fila1 = encontrarIndiceColumnaMayorRadios(matriz, 2);  // Cambiado a mayor radio
+        if (negativo !== -2) {
+            let fila1 = encontrarIndiceColumnaMenorRadios(matriz, 2);
             let iteracion1 = convertirfila1(matrixConRadios, 2);
+
 
             let linea = matriz[fila1].slice(2, -1);
             iteracion1 = convertirColumnas0(iteracion1, linea, 2);
+
 
             // Guardar la matriz modificada en el array de iteraciones
             iteraciones.push({
@@ -171,13 +156,27 @@ export function granM(sistema, vari, res, arti, holgura) {
                 matriz: JSON.parse(JSON.stringify(iteracion1)) // Clonar la matriz para evitar referencias
             });
 
-            // Actualizamos la matriz y seguimos iterando
+
+            negativo = encontrarIndiceMenorValorFilaZ(iteracion1, 2);
+
+
             matriz = iteracion1;
             iteracion++;
-        } else {
+        } else if (negativo === -2) {
             console.log(iteraciones);
-            console.log("Problema no acotado: todos los radios son +INF.");
             return "No acotado";
         }
+
+        else {
+            iteraciones.push({
+                iteracion: iteracion + 1,
+                matriz: JSON.parse(JSON.stringify(matriz))
+            });
+
+        }
     }
-}
+
+    console.log(iteraciones);
+    return iteraciones;
+
+} 
