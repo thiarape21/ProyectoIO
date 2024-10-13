@@ -161,6 +161,10 @@ function SimplexForm() {
     const matrix = [];
     const empezar = (parseInt(contarArtificiales()) > 0 ? 1 : 0);
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+    const resta = (parseInt(contarArtificiales()) > 0 ? 1 : 2);
+>>>>>>> parent of 184b105 (Front)
 =======
     const resta = (parseInt(contarArtificiales()) > 0 ? 1 : 2);
 >>>>>>> parent of 184b105 (Front)
