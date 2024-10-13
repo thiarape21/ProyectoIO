@@ -98,6 +98,7 @@ function SimplexForm() {
     newValues.push(objectiveValues);
     restrictionsValues.forEach((value) => newValues.push(value));
     const columna = parseInt(restrictionsValues[0].length) + parseInt(restrictions);
+    
 
     for (let i = 0; i < newValues.length; i++) {
       matrix[i] = [];
@@ -159,6 +160,11 @@ function SimplexForm() {
     const filas = parseInt(restrictions) + 2;
     const arti = variables1 + parseInt(contarholgura());
     const matrix = [];
+    if (parseInt(contarArtificiales()) !== 0) {
+      const w = Array.from({ length: columna }, (_, k) => (k >= arti && k < columna - 1 ? 1 : 0));
+      matrix.push(w);
+    }
+
 
     const empezar = (parseInt(contarArtificiales()) > 0 ? 1 : 0);
 
