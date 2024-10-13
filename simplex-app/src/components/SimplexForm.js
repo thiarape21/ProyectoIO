@@ -3,6 +3,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import '../CSS/Form.css';
 import { casoBase } from '../Algorithms/simplex_casoBase';
 import { faseUno, encogerMatriz } from '../Algorithms/simplex_dosFases';
+import { granM } from '../Algorithms/simplex_granM';
 
 // Aquí agregas los imports del método de la Gran M y el de dos fases
 // import { granM } from '../Algorithms/simplex_granM';
@@ -333,8 +334,12 @@ function SimplexForm() {
           className="submit-button"
           onClick={() => {
             if (validateForm()) {
-              const sistema = convertGranM();
-             // const fase1 = faseUno(sistema, parseInt(variables), parseInt(restrictions), parseInt(contarArtificiales()));
+               const sistema = convertToMatrixDosFases();
+             // const sistema = convertGranM();
+              //const matrix = granM(sistema, parseInt(variables), parseInt(restrictions), 
+            //  parseInt(contarArtificiales()),parseInt( contarholgura()) );
+              const fase1 = faseUno(sistema, parseInt(variables), parseInt(restrictions), parseInt(contarArtificiales()),
+             parseInt( contarholgura()));
               //   const matrix = casoBase(parseInt(variables), parseInt(restrictions), encogerMatriz(), 0);
               // console.log(matrix);
 
