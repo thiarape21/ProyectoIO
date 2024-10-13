@@ -147,9 +147,8 @@ function SimplexForm() {
     const filas = restrictions + 2;
     const arti = variables1 + holgura;
     const matrix = [];
-    const empezar = contarArtificiales() > 0 ? 1 : 0;
-
-    if (contarArtificiales() !== 0) {
+    const empezar = (parseInt(contarArtificiales()) > 0 ? 1 : 0);
+    if (parseInt(contarArtificiales()) !== 0) {
       const w = Array.from({ length: columna }, (_, k) => (k >= arti && k < columna - 1 ? 1 : 0));
       matrix.push(w);
     }
