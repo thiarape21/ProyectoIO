@@ -113,14 +113,14 @@ export function encontrarIndiceColumnaMayorRadios(matriz) {
 }
 
 export function granM(sistema, vari, res, arti, holgura) {
-    let sistema1 = 
+/*     let sistema1 = 
     [[-2, 2, 1, 1, 0, 0, 0, 'M', 'M', 0, 'N/A'],
     [1, 2, 1, 1, 1, 0, 0, 0, 0, 2, 0],
     [1, -1, 1, 5, 0, -1, 0, 1, 0, 4, 0],
-    [2, -1, 1, 0, 0, 0, -1, 0, 1, 2, 0]]
+    [2, -1, 1, 0, 0, 0, -1, 0, 1, 2, 0]] */
 
-    let matrix1 = simplexBasic(4, 3, 2, 'Gran M', 3);
-    let matrix2 = llenarSistemaEnMatriz(matrix1, sistema1, 3);
+    let matrix1 = simplexBasic(vari, res, arti, 'Gran M', holgura);
+    let matrix2 = llenarSistemaEnMatriz(matrix1, sistema, holgura);
     let matriz = cambiarA(matrix2);
 
 
@@ -138,16 +138,16 @@ export function granM(sistema, vari, res, arti, holgura) {
         });
 
 
-        let matrixConRadios = calcularRadios(matriz, 2, 'Gran M');
-        negativo = encontrarIndiceMenorValorFilaZ(matrixConRadios, 2);
+        let matrixConRadios = calcularRadios(matriz, arti, 'Gran M');
+        negativo = encontrarIndiceMenorValorFilaZ(matrixConRadios, arti);
 
         if (negativo !== -2) {
-            let fila1 = encontrarIndiceColumnaMenorRadios(matriz, 2);
-            let iteracion1 = convertirfila1(matrixConRadios, 2);
+            let fila1 = encontrarIndiceColumnaMenorRadios(matriz, arti);
+            let iteracion1 = convertirfila1(matrixConRadios, arti);
 
 
             let linea = matriz[fila1].slice(2, -1);
-            iteracion1 = convertirColumnas0(iteracion1, linea, 2);
+            iteracion1 = convertirColumnas0(iteracion1, linea, arti);
 
 
             // Guardar la matriz modificada en el array de iteraciones
@@ -157,7 +157,7 @@ export function granM(sistema, vari, res, arti, holgura) {
             });
 
 
-            negativo = encontrarIndiceMenorValorFilaZ(iteracion1, 2);
+            negativo = encontrarIndiceMenorValorFilaZ(iteracion1, arti);
 
 
             matriz = iteracion1;

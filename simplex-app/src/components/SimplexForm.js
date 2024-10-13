@@ -87,7 +87,7 @@ function SimplexForm() {
         return;
       }
 
-   //   navigate('/data', { state: {  resultado } }); 
+      navigate('/data', { state: {  resultado } }); 
 
     }
   };
@@ -195,7 +195,7 @@ function SimplexForm() {
     console.log(restrictionsValues);
     console.log(`Cantidad de columnas: ${columna}`);
     console.log(`Cantidad de filas: ${filas}`);
-    console.log(`Cantidad de artificiales: ${parseInt(contarArtificiales())}`);
+    console.log(`Cantidad de artificiales: ${parseInt(contarArtificiales())}`); 
     console.log(`Cantidad de holgura: ${contarholgura()}`);
    
     console.log(restrictionOperators);
