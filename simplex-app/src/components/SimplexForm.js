@@ -159,46 +159,8 @@ function SimplexForm() {
     const filas = parseInt(restrictions) + 2;
     const arti = variables1 + parseInt(contarholgura());
     const matrix = [];
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-    const empezar = (parseInt(contarArtificiales()) > 0 ? 1 : 0);
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-    const resta = (parseInt(contarArtificiales()) > 0 ? 1 : 2);
->>>>>>> parent of 184b105 (Front)
-=======
-    const resta = (parseInt(contarArtificiales()) > 0 ? 1 : 2);
->>>>>>> parent of 184b105 (Front)
-=======
->>>>>>> parent of 29ff3b7 (changes)
-    if (parseInt(contarArtificiales()) !== 0) {
-=======
-    const empezar = contarArtificiales() > 0 ? 1 : 0;
 
-    if (contarArtificiales() !== 0) {
->>>>>>> parent of d7be57d (Merge branch 'main' of https://github.com/thiarape21/ProyectoIO)
-=======
     const empezar = (parseInt(contarArtificiales()) > 0 ? 1 : 0);
-    const resta = (parseInt(contarArtificiales()) > 0 ? 1 : 2);
-    if (parseInt(contarArtificiales()) !== 0) {
->>>>>>> parent of 184b105 (Front)
-=======
-    const empezar = (parseInt(contarArtificiales()) > 0 ? 1 : 0);
-    const resta = (parseInt(contarArtificiales()) > 0 ? 1 : 2);
-    if (parseInt(contarArtificiales()) !== 0) {
->>>>>>> parent of 184b105 (Front)
-=======
-    const empezar = (parseInt(contarArtificiales()) > 0 ? 1 : 0);
-    const resta = (parseInt(contarArtificiales()) > 0 ? 1 : 2);
-    if (parseInt(contarArtificiales()) !== 0) {
->>>>>>> parent of 184b105 (Front)
-      const w = Array.from({ length: columna }, (_, k) => (k >= arti && k < columna - 1 ? 1 : 0));
-      matrix.push(w);
-    }
 
     for (let i = empezar; i < filas; i++) {
       matrix[i] = [];
