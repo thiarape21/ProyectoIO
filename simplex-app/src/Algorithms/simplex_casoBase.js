@@ -1,6 +1,5 @@
 
 // caso basico 
-import {encogerMatriz} from '../Algorithms/simplex_dosFases';
 
 
 
@@ -361,11 +360,7 @@ export function casoBase(variable, res, sistema, arti) {
     }
 
     else {
-        const ultimaIteracion = sistema[sistema.length - 1]; // Obtiene la última iteración
-        const ultimaMatriz = ultimaIteracion.matriz; // Obtiene la matriz de la última iteración
-        matriz = encogerMatriz(ultimaMatriz);
-        console.log("asi se ve la matiz reducida");
-        console.log(matriz);
+        matriz = sistema;
     }
 
     let negativo = 0;
