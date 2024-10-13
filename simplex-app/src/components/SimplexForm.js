@@ -334,18 +334,18 @@ function SimplexForm() {
           className="submit-button"
           onClick={() => {
             if (validateForm()) {
-               const sistema = convertToMatrixDosFases();
-             // const sistema = convertGranM();
-              //const matrix = granM(sistema, parseInt(variables), parseInt(restrictions), 
-            //  parseInt(contarArtificiales()),parseInt( contarholgura()) );
-              const fase1 = faseUno(sistema, parseInt(variables), parseInt(restrictions), parseInt(contarArtificiales()),
-             parseInt( contarholgura()));
-              //   const matrix = casoBase(parseInt(variables), parseInt(restrictions), encogerMatriz(), 0);
+        //      const sistema = convertToMatrixDosFases();
+           //  const sistema = convertGranM();
+        //    const matrix = granM(sistema, parseInt(variables), parseInt(restrictions), 
+        //     parseInt(contarArtificiales()),parseInt( contarholgura()) );
+           //   const fase1 = faseUno(sistema, parseInt(variables), parseInt(restrictions), parseInt(contarArtificiales()),
+         //    parseInt( contarholgura()));
+             
               // console.log(matrix);
 
-              /*       const sistema = convertToMatrix();
-                    const matrix = casoBase(parseInt(variables), parseInt(restrictions), sistema,parseInt(contarArtificiales()));
-                    navigate('/data', { state: { objectiveValues, restrictionsValues, variables, restrictions, matrix } }); */
+                    const sistema = convertToMatrix();
+                      const matrix = casoBase(parseInt(variables), parseInt(restrictions), sistema, 0, parseInt( contarholgura()) );
+                 //   navigate('/data', { state: { objectiveValues, restrictionsValues, variables, restrictions, matrix } }); 
             }
           }}
         >

@@ -14,10 +14,10 @@ import {encogerMatriz} from '../Algorithms/simplex_dosFases';
 //arma la matrix segun la cantidad de restricciones y variables y cuantas varaibles artificial hay
 export function simplexBasic(vari, res, arti, metodo, holgura) {//! aqui tiene que ser armar la matrix con el gran M
     const matrix = [];
-    const rows = (arti === 0 || metodo.includes('Dos Fases')) ? res + 3 : res + 2;
+    const rows = (metodo.includes('Caso Base')|| metodo.includes('Gran M')) ? res + 2 : res + 3;
     console.log(metodo);
     console.log(`las filas es : ${rows}`);
-    const colums = vari + res + arti + 2; //! mas 4 si es dos fases 
+    const colums = vari + holgura + arti + 4 ; //! mas 4 si es dos fases 
     console.log(`las columnas es: ${colums}`);
     matrix[0] = construirArray(vari, res, arti, holgura);
     const prueba = (arti > 0 &&  metodo.includes('Dos Fases')) ? 2 : 1;
@@ -46,7 +46,7 @@ export function simplexBasic(vari, res, arti, metodo, holgura) {//! aqui tiene q
             if (arti > 0 && i > as ) {
                 matrix[i][1] = `a${vari + res + i - as}`;
                 arti--;
-            } else {
+            } else if(holgura !== 0) {
                 matrix[i][1] = `s${vari + i - ss}`;
             }
         }
@@ -66,12 +66,12 @@ export function construirArray(vari, res, arti, holgura) { //! hace el encabezad
         array.push(`x${i}`);
     }
 
-
+    if( holgura !==0 ){
     for (let j = 1; j <= holgura; j++) {
         array.push(`s${vari + j}`);//!es aqui el problema como no todas tienen de holgura  queiro decir el igual , mete una de mas
-    }
+    }}
 
-    if (arti > 0) {
+    if (arti > 0 ) {
         for (let k = 0; k < arti; k++) {
             array.push(`a${vari + res + k + 1}`);
         }
