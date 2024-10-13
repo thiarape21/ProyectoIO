@@ -4,18 +4,20 @@ import '../CSS/Data.css';
 
 function Data() {
   const location = useLocation();
-  console.log(location.state); 
-  const { matrix } = location.state || {};
+
+  const { resultado } = location.state || {};
+  console.log(resultado); 
 
   if (!location.state) {
     return <div className="no-data">No se recibieron datos.</div>;
   }
 
+
   return (
     <div className="datos-container">
       <h1>Solución del Método Simplex</h1>
 
-      {matrix.map((iteracionObj, iterIndex) => (
+      {resultado.map((iteracionObj, iterIndex) => (
         <div key={iterIndex} className="iteracion-card">
           <h2 className="iteracion-title">Iteración {iterIndex + 1}</h2>
           <div className="matriz-container">
@@ -48,14 +50,14 @@ function Data() {
           <thead>
             <tr>
               <th>Variable</th>
-              {Array.from({ length: matrix[0].matriz[0].length - 1 }).map((_, index) => (
+              {Array.from({ length: resultado[0].matriz[0].length - 1 }).map((_, index) => (
                 <th key={`X${index + 1}`}>X{index + 1}</th>
               ))}
               <th>RHS</th> 
             </tr>
           </thead>
           <tbody>
-            {matrix.map((iteracionObj, rowIndex) => (
+            {resultado.map((iteracionObj, rowIndex) => (
               <tr key={rowIndex}>
                 <td>{rowIndex === 0 ? 'Z' : `Restricción ${rowIndex}`}</td>
                 {iteracionObj.matriz[0].map((value, colIndex) => (

@@ -76,20 +76,23 @@ function SimplexForm() {
         const sistema = convertToMatrix();
         resultado = granM(objectiveValues, sistema, objectiveFunction);
       } else if (method === 'casobase') {
+        console.log('entro a caso base');
         const sistema = convertToMatrix();
         resultado = casoBase(parseInt(variables), parseInt(restrictions), sistema, 0, parseInt( contarholgura()) );
+        navigate('/data', { state: {  resultado } }); 
       } else {
         setErrorMessage('Método no reconocido.');
         return;
       }
 
-      navigate('/data', { state: { resultado } });
+     
+
     }
   };
 
   const convertToMatrix = () => {
     objectiveValues.push(0);
-    const matrix = [];
+  
     const newValues = [objectiveValues];
     restrictionsValues.forEach((value) => newValues.push(value));
     const columna = parseInt(restrictionsValues[0].length) + parseInt(restrictions);
