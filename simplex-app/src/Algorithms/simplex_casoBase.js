@@ -155,7 +155,7 @@ export function encontrarIndiceMenorValorFilaZ(matriz, arti) {
 
 // Función para calcular los valores en la columna de 'Radios'
 //recibe la matriz  armada y calcula los radios 
-export function calcularRadios(matriz, arti) {
+export function calcularRadios(matriz, arti, metodo) {
     const columnaIndiceMenor = encontrarIndiceMenorValorFilaZ(matriz, arti);
     const indiceColumnaRHS = matriz[1].length - 2;
     const indiceResultado = indiceColumnaRHS + 1;
@@ -167,7 +167,7 @@ export function calcularRadios(matriz, arti) {
     }
 
 
-    const filaInicio = (arti === 0) ? 2 : 3;
+    const filaInicio = (arti !== 0 && metodo === "Dos Fases") ? 3 : 2;
 
     for (let i = filaInicio; i < matriz.length; i++) {
         const valorColumna = matriz[i][columnaIndiceMenor];
@@ -231,8 +231,8 @@ export function encontrarIndiceColumnaMenorRadios(matriz) {
 
 
 export function extraerBVS(matrix, indiceMenores) {
-    console.log('Hay empate en la variable saliente,indices: ');
-    console.table(indiceMenores);
+    // console.log('Hay empate en la variable saliente,indices: ');
+    // console.table(indiceMenores);
     let variableSeleccionada = 0;
     let menorIndice = Infinity;
 
@@ -361,7 +361,7 @@ export function casoBase(variable, res, sistema, arti, holgura) {
 
     let matriz;
 
-    if (arti === 0) {
+    if (arti === 0  ) {
         let matrix1 = simplexBasic(variable, res, 0, 'Caso Base', holgura);
         matriz = llenarSistemaEnMatriz(matrix1, sistema , holgura);
         console.log(matriz);
@@ -389,7 +389,7 @@ export function casoBase(variable, res, sistema, arti, holgura) {
         });
 
 
-        let matrixConRadios = calcularRadios(matriz, 0);
+        let matrixConRadios = calcularRadios(matriz, 0, 'Caso Base');
         negativo = encontrarIndiceMenorValorFilaZ(matrixConRadios, 0);
 
         if (negativo !== -2) {

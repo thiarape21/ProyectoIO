@@ -214,23 +214,23 @@ function SimplexForm() {
           else {
             matrix[i][j] = 0;
           }
-        } else {
+        } else { 
           // Filas de restricciones
           if (i > 0 && j >= variables) {
             matrix[i][j] = 0;
-            if (restrictionOperators[i - 1] === "≤") {
-              matrix[i][variables1 - 1 + i - 1] = 1;
+            if (restrictionOperators[i - 1] === "≥") {
+              matrix[i][variables1 - 1 + i] = 1;
               if (j === columna - 1) { // RHS
                 matrix[i][j] = restrictionsValues[i - 1][restrictionsValues[0].length - 1];
               }
-            } else if (restrictionOperators[i - 1] === "≥") {
-              matrix[i][variables1 - 1 + i - 1] = -1;
+            } else if (restrictionOperators[i - 1] === "≤") {
+              matrix[i][variables1 - 1 + i -1] = -1;
               matrix[i][(variables1 + holgura - 1) + i - 1] = 1;
               if (j === columna - 1) { // RHS
                 matrix[i][j] = restrictionsValues[i - 1][restrictionsValues[0].length - 1];
               }
             } else if (restrictionOperators[i - 1] === "=") {
-              matrix[i][(variables1 + holgura - 1) + i ] = 1;
+              matrix[i][(variables1 + holgura - 1) + i -1] = 1;
               if (j === columna - 1) { // RHS
                 matrix[i][j] = restrictionsValues[i - 1][restrictionsValues[0].length - 1];
               }
