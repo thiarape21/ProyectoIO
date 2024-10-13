@@ -200,6 +200,7 @@ function SimplexForm() {
    
     console.log(restrictionOperators);
 
+  
     for (let i = 0; i < filas; i++) {
       matrix[i] = [];
       for (let j = 0; j < columna; j++) {
@@ -246,6 +247,7 @@ function SimplexForm() {
 
 
   }
+
 
   return (
     <div className="container">

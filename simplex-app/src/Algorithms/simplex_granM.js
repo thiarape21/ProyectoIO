@@ -50,9 +50,10 @@ function cambiarA(matrix) {
 export function granM(sistema, vari , res, arti, holgura){
     let matrix1 = simplexBasic(vari, res, arti ,'Gran M', holgura);
     let matrix2 = llenarSistemaEnMatriz(matrix1, sistema, holgura);
-   // let matriz = cambiarA(matrix2);
+    let matriz = cambiarA(matrix2);
 
     console.log(matrix2);
+    console.log(matriz);
 
 
 }
