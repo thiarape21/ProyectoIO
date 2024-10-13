@@ -161,6 +161,7 @@ function SimplexForm() {
     const matrix = [];
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
     const empezar = (parseInt(contarArtificiales()) > 0 ? 1 : 0);
 <<<<<<< HEAD
 <<<<<<< HEAD
@@ -179,6 +180,11 @@ function SimplexForm() {
 
     if (contarArtificiales() !== 0) {
 >>>>>>> parent of d7be57d (Merge branch 'main' of https://github.com/thiarape21/ProyectoIO)
+=======
+    const empezar = (parseInt(contarArtificiales()) > 0 ? 1 : 0);
+    const resta = (parseInt(contarArtificiales()) > 0 ? 1 : 2);
+    if (parseInt(contarArtificiales()) !== 0) {
+>>>>>>> parent of 184b105 (Front)
 =======
     const empezar = (parseInt(contarArtificiales()) > 0 ? 1 : 0);
     const resta = (parseInt(contarArtificiales()) > 0 ? 1 : 2);
