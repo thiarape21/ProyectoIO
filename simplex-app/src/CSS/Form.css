@@ -12,17 +12,39 @@ body {
 
 .container {
   width: 100%;
-  max-width: 1400px; 
+  max-width: 1400px;
   margin: 0 auto;
   padding: 30px;
-  background-color: #ffffff; /* Fondo blanco para el cuadro */
+  background-color: #ffffff;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   box-sizing: border-box;
   border-radius: 25px;
-  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1); /* Añade sombra para destacar el cuadro */
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.restriction-container {
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 15px;
+  margin-bottom: 20px;
+  background-color: #f9f9f9;
+}
+
+.input-row {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.restriction-container h4 {
+  margin: 10px 0;
+  color: #00796b;
+  font-size: 1.2rem;
 }
 
 h2 {
@@ -33,7 +55,6 @@ h2 {
 
 form {
   width: 100%;
-  max-width: 100%;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -47,28 +68,48 @@ h3 {
   text-align: left;
 }
 
-.input-row, .restriction-row {
-  display: flex; 
-  justify-content: center; 
-  align-items: center; 
-  gap: 10px; /* Espacio entre los inputs */
-  margin-bottom: 20px; 
+.input-row {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 20px;
+  max-width: 100%;
+  overflow: hidden;
+  flex-wrap: wrap;
+}
+
+.restriction-container {
+  display: flex;
+  overflow-x: auto;
+  max-width: 100%;
+  padding: 5px 0;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+}
+
+.restriction-row {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 20px;
+  flex-wrap: nowrap;
 }
 
 .variable-input, .operator-select {
-  width: 80px; /* Ancho de los inputs */
-  height: 40px; /* Alto de los inputs */
-  margin: 10px; /* Margen alrededor */
-  border: 1px solid #ddd; /* Borde del input */
-  border-radius: 8px; /* Esquinas redondeadas */
-  text-align: center; /* Centra el texto */
-  font-size: 1rem; /* Tamaño de fuente */
-  background-color: #f9f9f9; /* Fondo del input */
+  width: 10px;
+  height: 40px;
+  margin: 10px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  text-align: center;
+  font-size: 1rem;
+  background-color: #f9f9f9;
 }
 
-
 input[type="number"], select {
-  width: 80px;
+  width: 40px;
   height: 40px;
   margin: 10px;
   border: 1px solid #ddd;
@@ -100,44 +141,34 @@ button:hover {
   background-color: #00796b;
 }
 
-.restriction-row {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 10px;
-  margin-bottom: 20px;
-  flex-wrap: nowrap; /* Mantiene las restricciones en fila */
-}
-
 .error-message {
   color: red;
-
 }
 
-/* Ajustes para pantallas pequeñas */
 @media screen and (max-width: 768px) {
   .restriction-row, .input-row {
-      flex-wrap: wrap; /* Alinea verticalmente si no cabe en la pantalla */
+    flex-wrap: wrap;
   }
 
   input[type="number"], select {
-      width: 100%;
-      margin: 5px 0;
+    width: calc(100% - 20px);
+    margin: 5px 0;
+    max-width: 100%;
   }
 
   button {
-      font-size: 1rem;
-      padding: 10px 20px;
+    font-size: 1rem;
+    padding: 10px 20px;
   }
 }
 
 @media screen and (max-width: 480px) {
   h2 {
-      font-size: 1.8rem;
+    font-size: 1.8rem;
   }
 
   button {
-      padding: 8px 20px;
-      font-size: 0.9rem;
+    padding: 8px 20px;
+    font-size: 0.9rem;
   }
 }
