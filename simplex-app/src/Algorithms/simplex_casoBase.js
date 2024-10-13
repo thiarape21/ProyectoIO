@@ -1,5 +1,6 @@
 
 // caso basico 
+import {encogerMatriz} from '../Algorithms/simplex_dosFases';
 
 
 
@@ -11,18 +12,24 @@
 //** Recibe como parametro la cantidad de variables y restricciones 
 //devuelve la matriz vacia con 0 en donde van los numeros correspondientes del sistema
 //arma la matrix segun la cantidad de restricciones y variables y cuantas varaibles artificial hay
-export function simplexBasic(vari, res, arti) {//! aqui tiene que ser armar la matrix con el gran M
+export function simplexBasic(vari, res, arti, metodo, holgura) {//! aqui tiene que ser armar la matrix con el gran M
     const matrix = [];
-    const rows = (arti === 0) ? res + 2 : res + 3;
-    const colums = vari + res + arti + 4;
-    matrix[0] = construirArray(vari, res, arti);
-    const prueba = (arti > 0) ? 2 : 1;
+    const rows = (metodo.includes('Caso Base')|| metodo.includes('Gran M')) ? res + 2 : res + 3;
+    console.log(metodo);
+    console.log(`las filas es : ${rows}`);
+    const colums = vari + holgura + arti + 4 ; //! mas 4 si es dos fases 
+    console.log(`las columnas es: ${colums}`);
+    matrix[0] = construirArray(vari, res, arti, holgura);
+    const prueba = (arti > 0 &&  metodo.includes('Dos Fases')) ? 2 : 1;
+    const as = (arti > 0 &&  metodo.includes('Dos Fases')) ? 3 : 2;
+    const ss = (arti > 0 &&  metodo.includes('Dos Fases')) ? 2 : 1;
+
 
     for (let i = 1; i < rows; i++) {
         matrix[i] = new Array(colums).fill(0);
         matrix[i][0] = i - 1;
 
-        if (arti > 0) { // Si hay variables artificiales (dos fases)
+        if (arti > 0 &&  metodo.includes('Dos Fases')) { // Si hay variables artificiales (dos fases)
             if (i === 1) {
                 matrix[i][1] = "w";
             } else if (i === 2) {
@@ -36,11 +43,11 @@ export function simplexBasic(vari, res, arti) {//! aqui tiene que ser armar la m
         }
 
         if (i > prueba) {
-            if (arti > 0 && i > 3) {
-                matrix[i][1] = `a${vari + res + i - 3}`;
+            if (arti > 0 && i > as ) {
+                matrix[i][1] = `a${vari + res + i - as}`;
                 arti--;
-            } else {
-                matrix[i][1] = `s${vari + i - 2}`;
+            } else if(holgura !== 0) {
+                matrix[i][1] = `s${vari + i - ss}`;
             }
         }
     }
@@ -50,7 +57,7 @@ export function simplexBasic(vari, res, arti) {//! aqui tiene que ser armar la m
 }
 
 // Necesita la cantidad de variables y restricciones
-export function construirArray(vari, res, arti) { //! hace el encabezado de la matrix y el costado de la matriz del caso base
+export function construirArray(vari, res, arti, holgura) { //! hace el encabezado de la matrix y el costado de la matriz del caso base
     let array = [];
     array.push("i");
     array.push("BVH");
@@ -59,11 +66,12 @@ export function construirArray(vari, res, arti) { //! hace el encabezado de la m
         array.push(`x${i}`);
     }
 
-    for (let j = 1; j <= res; j++) {
-        array.push(`s${vari + j}`);
-    }
+    if( holgura !==0 ){
+    for (let j = 1; j <= holgura; j++) {
+        array.push(`s${vari + j}`);//!es aqui el problema como no todas tienen de holgura  queiro decir el igual , mete una de mas
+    }}
 
-    if (arti > 0) {
+    if (arti > 0 ) {
         for (let k = 0; k < arti; k++) {
             array.push(`a${vari + res + k + 1}`);
         }
@@ -349,18 +357,22 @@ export function convertirColumnas0(matriz, filaConUno, arti) {
     return matriz;
 }
 
-export function casoBase(variable, res, sistema, arti) {
+export function casoBase(variable, res, sistema, arti, holgura) {
 
     let matriz;
 
     if (arti === 0) {
-        let matrix1 = simplexBasic(variable, res, 0);
-        matriz = llenarSistemaEnMatriz(matrix1, sistema);
+        let matrix1 = simplexBasic(variable, res, 0, 'Caso Base', holgura);
+        matriz = llenarSistemaEnMatriz(matrix1, sistema , holgura);
         console.log(matriz);
     }
 
     else {
-        matriz = sistema;
+        const ultimaIteracion = sistema[sistema.length - 1]; // Obtiene la última iteración
+        const ultimaMatriz = ultimaIteracion.matriz; // Obtiene la matriz de la última iteración
+        matriz = encogerMatriz(ultimaMatriz);
+        console.log("asi se ve la matiz reducida");
+        console.log(matriz);
     }
 
     let negativo = 0;

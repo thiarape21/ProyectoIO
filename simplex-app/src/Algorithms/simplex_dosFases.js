@@ -68,12 +68,12 @@ export function encogerMatriz(matriz) {
 
 
 //! tiene que entrarle  sistema , var, res y arti
-export function faseUno(sistema, vari , res, arti) {// minimizacion 
+export function faseUno(sistema, vari , res, arti, holgura) {// minimizacion 
 
 
 
-    let matrix1 = simplexBasic(vari, res, arti);
-    let matrix2 = llenarSistemaEnMatriz(matrix1, sistema);
+    let matrix1 = simplexBasic(vari, res, arti,'Dos Fases',holgura);
+    let matrix2 = llenarSistemaEnMatriz(matrix1, sistema,holgura);
     let matriz = cambiarA(matrix2);
     let negativo = 0;
     let iteracion = 0;
