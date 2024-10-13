@@ -89,6 +89,7 @@ function SimplexForm() {
 
   const convertToMatrix = () => {
     objectiveValues.push(0);
+    const matrix = [];
     const newValues = [objectiveValues];
     restrictionsValues.forEach((value) => newValues.push(value));
     const columna = parseInt(restrictionsValues[0].length) + parseInt(restrictions);
