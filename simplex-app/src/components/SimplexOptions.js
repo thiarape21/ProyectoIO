@@ -1,7 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState } from 'react'; 
 import { useNavigate } from 'react-router-dom';
 import '../CSS/Options.css';
-
 
 function SimplexOptions() {
   const navigate = useNavigate();
@@ -32,18 +31,25 @@ function SimplexOptions() {
     <div className="container">
       <h1>Calculadora Simplex</h1>
       <form onSubmit={handleSubmit}>
-        <label>Método:  </label>
+        <label>Método: </label>
         <select value={method} onChange={(e) => setMethod(e.target.value)}>
           <option value="">Seleccione un método</option>
           <option value="Dos Fases">Dos Fases</option>
           <option value="Gran M">Gran M</option>
+          <option value="General">General</option> {/* Nueva opción añadida */}
         </select>
 
         <label>Función Objetivo: </label>
         <select value={objectiveFunction} onChange={(e) => setObjectiveFunction(e.target.value)}>
           <option value="">Seleccione el objetivo</option>
-          <option value="Maximizar">Maximizar</option>
-          <option value="Minimizar">Minimizar</option>
+          {method === 'General' ? ( // Solo mostrar "Maximizar" si el método es "General"
+            <option value="Maximizar">Maximizar</option>
+          ) : (
+            <>
+              <option value="Maximizar">Maximizar</option>
+              <option value="Minimizar">Minimizar</option>
+            </>
+          )}
         </select>
 
         <label>Cantidad de variables: </label>
@@ -52,7 +58,6 @@ function SimplexOptions() {
           value={variables}
           onChange={(e) => setVariables(e.target.value)}
           min="1"
-  
         />
 
         <label>Cantidad de restricciones: </label>
@@ -61,7 +66,6 @@ function SimplexOptions() {
           value={restrictions}
           onChange={(e) => setRestrictions(e.target.value)}
           min="1"
-
         />
 
         {error && <p style={{ color: 'red' }}>{error}</p>}
