@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import '../CSS/Form.css';
 import { casoBase } from '../Algorithms/simplex_casoBase';
@@ -10,45 +10,35 @@ function SimplexForm() {
   const navigate = useNavigate();
   const { method, objectiveFunction, variables, restrictions } = location.state;
 
-  // Estado para los valores de la función objetivo y las restricciones
   const [objectiveValues, setObjectiveValues] = useState(Array(variables).fill(0));
   const [restrictionsValues, setRestrictionsValues] = useState(
     Array(restrictions).fill().map(() => Array(variables).fill(0))
   );
 
   const [restrictionOperators, setRestrictionOperators] = useState(
-    Array(parseInt(restrictions)).fill(method === 'General' ? '≥' : '≥') // Inicializa de acuerdo al método
+    Array(parseInt(restrictions)).fill(method === 'General' ? '≥' : '≥')
   );
 
   const [errorMessage, setErrorMessage] = useState('');
 
-  // Función para manejar el cambio de la función objetivo
   const handleObjectiveChange = (index, value) => {
     const newValues = [...objectiveValues];
-    newValues[index] = parseFloat(value) || 0;
+    newValues[index] = isNaN(value) ? 0 : parseFloat(value);
     setObjectiveValues(newValues);
   };
 
-  // Función para manejar el cambio en las restricciones
   const handleRestrictionChange = (rowIndex, colIndex, value) => {
     const newValues = [...restrictionsValues];
-    newValues[rowIndex][colIndex] = parseFloat(value) || 0;
+    newValues[rowIndex][colIndex] = isNaN(value) ? 0 : parseFloat(value);
     setRestrictionsValues(newValues);
   };
 
-  // Función para manejar el cambio del operador de las restricciones
   const handleOperatorChange = (index) => {
     const updatedOperators = [...restrictionOperators];
-
-    // Cambia el operador solo si el método no es 'General'
-    if (method !== 'General') {
-      updatedOperators[index] = updatedOperators[index] === '≥' ? '≤' : updatedOperators[index] === '≤' ? '=' : '≥';
-    }
-
+    updatedOperators[index] = updatedOperators[index] === '≥' ? '≤' : updatedOperators[index] === '≤' ? '=' : '≥';
     setRestrictionOperators(updatedOperators);
   };
 
-  // Función para validar el formulario
   const validateForm = () => {
     let isValid = true;
     let errorMessage = '';
@@ -79,20 +69,15 @@ function SimplexForm() {
 
     if (validateForm()) {
       let resultado;
-      const objectiveType = objectiveFunction;
-
       if (method === 'Dos Fases') {
         const sistema = convertToMatrixDosFases();
-        resultado = faseUno(objectiveValues, sistema, objectiveType);
-
+        resultado = faseUno(objectiveValues, sistema, objectiveFunction);
       } else if (method === 'Gran M') {
         const sistema = convertToMatrix();
-        resultado = granM(objectiveValues, sistema, objectiveType);
-
-      } else if (method === 'Caso Base') {
+        resultado = granM(objectiveValues, sistema, objectiveFunction);
+      } else if (method === 'casobase') {
         const sistema = convertToMatrix();
-        resultado = casoBase(objectiveValues, restrictionsValues, objectiveType);
-
+        resultado = casoBase(parseInt(variables), parseInt(restrictions), sistema, 0, parseInt( contarholgura()) );
       } else {
         setErrorMessage('Método no reconocido.');
         return;
@@ -102,13 +87,12 @@ function SimplexForm() {
     }
   };
 
-  // Función para convertir los datos ingresados en una matriz para el algoritmo Simplex
   const convertToMatrix = () => {
     objectiveValues.push(0);
     const newValues = [objectiveValues];
     restrictionsValues.forEach((value) => newValues.push(value));
     const columna = parseInt(restrictionsValues[0].length) + parseInt(restrictions);
-
+    const matrix = [];
 
     for (let i = 0; i < newValues.length; i++) {
       matrix[i] = [];
@@ -147,11 +131,12 @@ function SimplexForm() {
     const filas = restrictions + 2;
     const arti = variables1 + holgura;
     const matrix = [];
+    const empezar = (parseInt(contarArtificiales()) > 0 ? 1 : 0);
+
     if (parseInt(contarArtificiales()) !== 0) {
       const w = Array.from({ length: columna }, (_, k) => (k >= arti && k < columna - 1 ? 1 : 0));
       matrix.push(w);
     }
-    const empezar = (parseInt(contarArtificiales()) > 0 ? 1 : 0);
 
     for (let i = empezar; i < filas; i++) {
       matrix[i] = [];
@@ -159,10 +144,7 @@ function SimplexForm() {
         if (i === empezar) {
           if (j < variables) {
             matrix[i][j] = objectiveValues[j] * -1;
-
-          }
-
-          else if (j >= variables) {
+          } else if (j >= variables) {
             matrix[i][j] = 0;
           }
         } else {
@@ -176,12 +158,12 @@ function SimplexForm() {
             } else if (restrictionOperators[i - 2] === "≥") {
               matrix[i][variables1 - 1 + i - 2] = -1;
               matrix[i][(variables1 + holgura - 1) + i - 1] = 1;
-              if (j === columna - 1) { // RHS
+              if (j === columna - 1) {
                 matrix[i][j] = restrictionsValues[i - 2][restrictionsValues[0].length - 1];
               }
             } else if (restrictionOperators[i - 2] === "=") {
               matrix[i][(variables1 + holgura - 1) + i - 1] = 1;
-              if (j === columna - 1) { // RHS
+              if (j === columna - 1) {
                 matrix[i][j] = restrictionsValues[i - 2][restrictionsValues[0].length - 1];
               }
             }
@@ -194,12 +176,13 @@ function SimplexForm() {
     console.log(matrix);
     return matrix;
   };
-  const convertGranM = () => {   // Casos de min 
+
+  const convertGranM = () => {
     const holgura = parseInt(contarholgura());
     const variables1 = parseInt(variables);
     const arti = variables1 + parseInt(contarholgura());
     const matrix = [];
-    const filas = parseInt(restrictions)+1 ;
+    const filas = parseInt(restrictions) + 1;
     const columna = variables1 + holgura + parseInt(contarArtificiales()) + 1;
 
     console.log(objectiveValues);
@@ -208,8 +191,6 @@ function SimplexForm() {
     console.log(`Cantidad de filas: ${filas}`);
     console.log(`Cantidad de artificiales: ${arti}`);
     console.log(`Cantidad de holgura: ${contarholgura()}`);
-   
-    
 
     for (let i = 0; i < filas; i++) {
       matrix[i] = [];
@@ -217,36 +198,33 @@ function SimplexForm() {
         if (i === 0) {
           if (j < variables) {
             matrix[i][j] = objectiveValues[j] * -1;
-          }
-          else if (j >= arti && j < columna - 1) {
+          } else if (j >= arti && j < columna - 1) {
             matrix[i][j] = 'M';
-          }
-          else {
+          } else {
             matrix[i][j] = 0;
           }
         } else {
-          // Filas de restricciones
           if (i > 0 && j >= variables) {
             matrix[i][j] = 0;
             if (restrictionOperators[i - 1] === "<=") {
               matrix[i][variables1 - 1 + i - 1] = 1;
-              if (j === columna - 1) { // RHS
+              if (j === columna - 1) {
                 matrix[i][j] = restrictionsValues[i - 1][restrictionsValues[0].length - 1];
               }
             } else if (restrictionOperators[i - 1] === ">=") {
               matrix[i][variables1 - 1 + i - 1] = -1;
               matrix[i][(variables1 + holgura - 1) + i - 1] = 1;
-              if (j === columna - 1) { // RHS
+              if (j === columna - 1) {
                 matrix[i][j] = restrictionsValues[i - 1][restrictionsValues[0].length - 1];
               }
             } else if (restrictionOperators[i - 1] === "=") {
-              matrix[i][(variables1 + holgura - 1) + i ] = 1;
-              if (j === columna - 1) { // RHS
+              matrix[i][(variables1 + holgura - 1) + i] = 1;
+              if (j === columna - 1) {
                 matrix[i][j] = restrictionsValues[i - 1][restrictionsValues[0].length - 1];
               }
             }
           } else {
-            matrix[i][j] = restrictionsValues[i-1][j];
+            matrix[i][j] = restrictionsValues[i - 1][j];
           }
         }
       }
@@ -254,15 +232,12 @@ function SimplexForm() {
     console.log(matrix);
 
     return matrix;
-
-
-  }
+  };
 
   return (
     <div className="container">
       <h2>{method} - {objectiveFunction}</h2>
-      <form>
-        {/* Función Objetivo */}
+      <form onSubmit={handleSubmit}>
         <h3>Función Objetivo:</h3>
         <div className="input-row">
           {Array.from({ length: variables }).map((_, index) => (
@@ -277,7 +252,6 @@ function SimplexForm() {
           ))}
         </div>
 
-        {/* Restricciones */}
         <h3>Restricciones:</h3>
         {Array.from({ length: restrictions }).map((_, rowIndex) => (
           <div key={rowIndex} className="restriction-container">

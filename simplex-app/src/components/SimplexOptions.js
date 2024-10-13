@@ -18,7 +18,6 @@ function SimplexOptions() {
       return;
     }
 
-    // Conversión a número para comparación
     if (parseInt(variables, 10) <= 0 || parseInt(restrictions, 10) <= 0) {
       setError('La cantidad de variables y restricciones deben ser mayores que cero.');
       return;
@@ -42,18 +41,18 @@ function SimplexOptions() {
     <div className="container">
       <h1>Calculadora Simplex</h1>
       <form onSubmit={handleSubmit}>
-        <label>Método:  </label>
+        <label>Método: </label>
         <select value={method} onChange={(e) => setMethod(e.target.value)}>
           <option value="">Seleccione un método</option>
           <option value="Dos Fases">Dos Fases</option>
           <option value="Gran M">Gran M</option>
-          <option value="General">General</option>
+          <option value="casobase">Caso Base</option>
         </select>
 
         <label>Función Objetivo: </label>
         <select value={objectiveFunction} onChange={(e) => setObjectiveFunction(e.target.value)}>
           <option value="">Seleccione el objetivo</option>
-          {method === 'General' ? (
+          {method === 'casobase' ? (
             <option value="Maximizar">Maximizar</option>
           ) : (
             <>
