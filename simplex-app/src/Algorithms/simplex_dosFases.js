@@ -127,11 +127,11 @@ export function faseUno(sistema, vari , res, arti) {// minimizacion
         } 
     }
     
-    console.log(iteraciones);
+  //  console.log(iteraciones);
 
     const devuelvo = ( esFactible(matriz)) ? iteraciones : 'no factible' ; //! esto se podria hacer del front end 
 
-
+    console.log(devuelvo);
     return devuelvo;
 
 

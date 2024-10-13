@@ -160,7 +160,6 @@ function SimplexForm() {
     const arti = variables1 + parseInt(contarholgura());
     const matrix = [];
     const empezar = (parseInt(contarArtificiales()) > 0 ? 1 : 0);
-    const resta = (parseInt(contarArtificiales()) > 0 ? 1 : 2);
     if (parseInt(contarArtificiales()) !== 0) {
       const w = Array.from({ length: columna }, (_, k) => (k >= arti && k < columna - 1 ? 1 : 0));
       matrix.push(w);
@@ -270,9 +269,9 @@ return (
   onClick={() => {
     if (validateForm()) {
       const sistema = convertToMatrixDosFases();
-     // const fase1 = faseUno(sistema,parseInt(variables) , parseInt(restrictions), parseInt(contarArtificiales()));
-   //   const matrix = casoBase(parseInt(variables), parseInt(restrictions), encogerMatriz(), 0);
-     // console.log(matrix);
+      const fase1 = faseUno(sistema,parseInt(variables) , parseInt(restrictions), parseInt(contarArtificiales()));//! si es no factible que lo imprima
+      const matrix = casoBase(parseInt(variables), parseInt(restrictions), fase1, parseInt(contarArtificiales()));
+      console.log(matrix);
 
 /*       const sistema = convertToMatrix();
       const matrix = casoBase(parseInt(variables), parseInt(restrictions), sistema,parseInt(contarArtificiales()));
