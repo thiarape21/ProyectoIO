@@ -139,7 +139,7 @@ export function granM(sistema, vari, res, arti, holgura) {
 
 
         let matrixConRadios = calcularRadios(matriz, arti, 'Gran M');
-        negativo = encontrarIndiceMenorValorFilaZ(matrixConRadios, arti);
+        negativo = encontrarIndiceMenorValorFilaZ(matrixConRadios, arti,'Gran M');
 
         if (negativo !== -2) {
             let fila1 = encontrarIndiceColumnaMenorRadios(matriz, arti);
@@ -157,7 +157,7 @@ export function granM(sistema, vari, res, arti, holgura) {
             });
 
 
-            negativo = encontrarIndiceMenorValorFilaZ(iteracion1, arti);
+            negativo = encontrarIndiceMenorValorFilaZ(iteracion1, arti,'Gran M');
 
 
             matriz = iteracion1;

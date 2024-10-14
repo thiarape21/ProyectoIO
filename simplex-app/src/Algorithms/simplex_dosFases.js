@@ -89,12 +89,12 @@ export function faseUno(sistema, vari , res, arti, holgura) {// minimizacion
 
        
         let matrixConRadios = calcularRadios(matriz,arti);
-        negativo = encontrarIndiceMenorValorFilaZ(matrixConRadios,arti);
+        negativo = encontrarIndiceMenorValorFilaZ(matrixConRadios,arti,'Dos Fases');
 
        
 
         if (negativo !== -2) {
-            let fila1 = encontrarIndiceColumnaMenorRadios(matriz);
+            let fila1 = encontrarIndiceColumnaMenorRadios(matriz, );
             let iteracion1 = convertirfila1(matrixConRadios, arti);
 
            
@@ -109,7 +109,7 @@ export function faseUno(sistema, vari , res, arti, holgura) {// minimizacion
             });
 
             
-            negativo = encontrarIndiceMenorValorFilaZ(iteracion1,arti);
+            negativo = encontrarIndiceMenorValorFilaZ(iteracion1,arti, 1);
 
             
             matriz = iteracion1;
@@ -131,8 +131,9 @@ export function faseUno(sistema, vari , res, arti, holgura) {// minimizacion
 
     const devuelvo = ( esFactible(matriz)) ? iteraciones : 'no factible' ; //! esto se podria hacer del front end 
 
+    
 
-    return devuelvo;
+    return {devuelvo, iteraciones};
 
 
 }
