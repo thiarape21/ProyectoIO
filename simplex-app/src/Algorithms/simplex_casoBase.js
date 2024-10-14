@@ -13,10 +13,10 @@ import { encogerMatriz } from '../Algorithms/simplex_dosFases';
 export function simplexBasic(vari, res, arti, metodo, holgura) {//! aqui tiene que ser armar la matrix con el gran M
     const matrix = [];
     const rows = (metodo.includes('Caso Base') || metodo.includes('Gran M')) ? res + 2 : res + 3;
-   // console.log(metodo);
-  //  console.log(`las filas es : ${rows}`);
+    // console.log(metodo);
+    //  console.log(`las filas es : ${rows}`);
     const colums = vari + holgura + arti + 4; //! mas 4 si es dos fases 
- //   console.log(`las columnas es: ${colums}`);
+    //   console.log(`las columnas es: ${colums}`);
     matrix[0] = construirArray(vari, res, arti, holgura);
     const prueba = (arti > 0 && metodo.includes('Dos Fases')) ? 2 : 1;
     const as = (arti > 0 && metodo.includes('Dos Fases')) ? 3 : 2;
@@ -172,19 +172,23 @@ export function calcularRadios(matriz, arti, metodo) {
 
 
 
-  //  console.log(`fila inicio ${filaInicio}`);
+    //  console.log(`fila inicio ${filaInicio}`);
 
     for (let i = filaInicio; i < matriz.length; i++) {
         const valorColumna = matriz[i][columnaIndiceMenor];
         const rhs = matriz[i][indiceColumnaRHS];
         if (valorColumna === 0 || rhs < 0) {
             matriz[i][indiceResultado] = '+INF';
-        } else {
+        }
+        else if (valorColumna < 0) {
+            matriz[i][indiceResultado] = '+INF';
+        }
+        else {
             matriz[i][indiceResultado] = rhs / valorColumna;
         }
     }
-  //  console.log('calculo de radios');
-   // console.log(matriz);
+    //  console.log('calculo de radios');
+    // console.log(matriz);
     return matriz;
 }
 
@@ -212,12 +216,12 @@ export function encontrarIndiceColumnaMenorRadios(matriz, arti, metodo) {
 
     if (arti && metodo.trim() === 'Dos Fases') {
         radios = matriz.slice(2).map(fila => fila[indiceColumnaRadio]);
-       // console.log('asi se ven los radios con dos fases');
+        // console.log('asi se ven los radios con dos fases');
     } else {
         radios = matriz.slice(1).map(fila => fila[indiceColumnaRadio]);
-       // console.log('asi se ven los radios con 1 fase');
+        // console.log('asi se ven los radios con 1 fase');
     }
-    
+
 
     let valoresRadios = radios.map(valor => {
         if (valor === 'N/A' || valor === '+INF') {
@@ -286,7 +290,7 @@ export function convertirfila1(matrix, arti) {
 
     let columna = encontrarIndiceMenorValorFilaZ(matrix, arti);
     let fila = encontrarIndiceColumnaMenorRadios(matrix, arti, 'Caso Base');
-//    console.log(`fila que entra ${fila}`)
+    //    console.log(`fila que entra ${fila}`)
     let variableEntrante = matrix[0][columna];
     // let variableSaliente = matrix[fila][1];
 
@@ -381,7 +385,7 @@ export function casoBase(variable, res, sistema, arti, holgura) {
     if (arti === 0) {
         let matrix1 = simplexBasic(variable, res, 0, 'Caso Base', holgura);
         matriz = llenarSistemaEnMatriz(matrix1, sistema, holgura);
-      //  console.log(matriz);
+        //  console.log(matriz);
     }
 
     else {

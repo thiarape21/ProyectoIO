@@ -16,7 +16,7 @@ function SimplexForm() {
   );
 
   const [restrictionOperators, setRestrictionOperators] = useState(
-    Array(parseInt(restrictions)).fill(method === 'General' ? '≥' : '≥')
+    Array(parseInt(restrictions)).fill(method === 'General' ? '≤' : '≤')
   );
 
   const [errorMessage, setErrorMessage] = useState('');
@@ -80,14 +80,14 @@ function SimplexForm() {
           parseInt(contarholgura()));
         console.log(resultado);
 
-         if (resultado.devuelvo === 'no factible') {
+        if (resultado.devuelvo === 'no factible') {
           matrix = resultado.iteraciones;
          // navigate('/data', { state: { matrix } });
         } else {
           matrix = casoBase(parseInt(variables), parseInt(restrictions), resultado.iteraciones, parseInt(contarArtificiales()));
           let iteraciones = resultado.iteraciones;
         //  navigate('/data', { state: { resultado, matrix } });
-        } 
+        }
       } else if (method === 'Gran M') {
         const sistema = convertGranM();
         resultado = granM(sistema, parseInt(variables), parseInt(restrictions),
@@ -102,8 +102,8 @@ function SimplexForm() {
         setErrorMessage('Método no reconocido.');
         return;
       }
-  
-    //  navigate('/data', { state: { resultado, matrix } });
+
+      navigate('/data', { state: { resultado, matrix } });
 
     }
   };
@@ -139,7 +139,7 @@ function SimplexForm() {
   };
 
   const contarArtificiales = () => {
-    return restrictionOperators.filter(elem => elem === "=" || elem === "≥").length;
+    return restrictionOperators.filter(elem => elem === "=" || elem === "≤").length;
   };
 
   const contarholgura = () => {
@@ -155,7 +155,12 @@ function SimplexForm() {
     const matrix = [];
     const empezar = (parseInt(contarArtificiales()) > 0 ? 1 : 0);
 
-
+    console.log(objectiveValues);
+    console.log(restrictionsValues);
+    console.log(`Cantidad de columnas: ${columna}`);
+    console.log(`Cantidad de filas: ${filas}`);
+    console.log(`Cantidad de artificiales: ${parseInt(contarArtificiales())}`);
+    console.log(`Cantidad de holgura: ${contarholgura()}`);
 
     if (parseInt(contarArtificiales()) !== 0) {
       const w = Array.from({ length: columna }, (_, k) => (k >= arti && k < columna - 1 ? 1 : 0));
@@ -174,14 +179,14 @@ function SimplexForm() {
         } else {
           if (i > empezar && j >= variables) {
             matrix[i][j] = 0;
-            if (restrictionOperators[i - 2] === "≤") {
+            if (restrictionOperators[i - 2] === "≥") {
               matrix[i][variables1 - 1 + i - 1] = 1;
               if (j === columna - 1) {
                 matrix[i][j] = restrictionsValues[i - 2][restrictionsValues[0].length - 1];
               }
-            } else if (restrictionOperators[i - 2] === "≥") {
+            } else if (restrictionOperators[i - 2] === "≤") {
               matrix[i][variables1 - 1 + i - 1] = -1;
-              matrix[i][(variables1 + holgura - 1) + i - 1] = 1;//!este es el que acada rato se cambia 
+              matrix[i][(variables1 + holgura - 1) + i - 2] = 1;
               if (j === columna - 1) {
                 matrix[i][j] = restrictionsValues[i - 2][restrictionsValues[0].length - 1];
               }
@@ -197,6 +202,7 @@ function SimplexForm() {
         }
       }
     }
+    console.log(matrix);
     return matrix;
   };
 
@@ -235,12 +241,12 @@ function SimplexForm() {
           // Filas de restricciones
           if (i > 0 && j >= variables) {
             matrix[i][j] = 0;
-            if (restrictionOperators[i - 1] === "≤") {
+            if (restrictionOperators[i - 1] === "≥") {
               matrix[i][variables1 - 1 + i] = 1;
               if (j === columna - 1) { // RHS
                 matrix[i][j] = restrictionsValues[i - 1][restrictionsValues[0].length - 1];
               }
-            } else if (restrictionOperators[i - 1] === "≥") {
+            } else if (restrictionOperators[i - 1] === "≤") {
               matrix[i][variables1 - 1 + i - 1] = -1;
               matrix[i][(variables1 + holgura - 1) + i - 1] = 1;
               if (j === columna - 1) { // RHS
@@ -305,7 +311,7 @@ function SimplexForm() {
               >
                 {method === 'casobase' ? (
                   // Solo muestra ≥ cuando el método es 'casobase'
-                  <option value="≥">≥</option>
+                  <option value="≤">≤</option>
                 ) : (
                   <>
                     <option value="≥">≥</option>
