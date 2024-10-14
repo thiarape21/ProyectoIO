@@ -85,7 +85,7 @@ function SimplexForm() {
          // navigate('/data', { state: { matrix } });
         } else {
           matrix = casoBase(parseInt(variables), parseInt(restrictions), resultado.iteraciones, parseInt(contarArtificiales()));
-        //  let iteraciones = resultado.iteraciones;
+          let iteraciones = resultado.iteraciones;
         //  navigate('/data', { state: { resultado, matrix } });
         } 
       } else if (method === 'Gran M') {
@@ -103,7 +103,7 @@ function SimplexForm() {
         return;
       }
   
-      navigate('/data', { state: { resultado, matrix } });
+    //  navigate('/data', { state: { resultado, matrix } });
 
     }
   };
@@ -155,12 +155,7 @@ function SimplexForm() {
     const matrix = [];
     const empezar = (parseInt(contarArtificiales()) > 0 ? 1 : 0);
 
-    console.log(objectiveValues);
-    console.log(restrictionsValues);
-    console.log(`Cantidad de columnas: ${columna}`);
-    console.log(`Cantidad de filas: ${filas}`);
-    console.log(`Cantidad de artificiales: ${parseInt(contarArtificiales())}`);
-    console.log(`Cantidad de holgura: ${contarholgura()}`);
+
 
     if (parseInt(contarArtificiales()) !== 0) {
       const w = Array.from({ length: columna }, (_, k) => (k >= arti && k < columna - 1 ? 1 : 0));
@@ -202,7 +197,6 @@ function SimplexForm() {
         }
       }
     }
-    console.log(matrix);
     return matrix;
   };
 

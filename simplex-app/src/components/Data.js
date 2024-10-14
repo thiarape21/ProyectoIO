@@ -5,14 +5,19 @@ import '../CSS/Data.css';
 function Data() {
   const location = useLocation();
   const { resultado, matrix } = location.state || {};
-  console.log(resultado);
+  console.log('Resultado:', resultado);
+  console.log('Matrix:', matrix);
 
   if (!resultado) {
     return <div className="no-data">No se recibieron datos.</div>;
   }
 
-  const ultimaIteracion = resultado[resultado.length - 1]; 
+  const ultimaIteracion = resultado[resultado.length - 1];
+  console.log('Ultima Iteracion:', ultimaIteracion);
+
+  // Verifica si hay infactibilidad en la solución
   const isInfeasible = ultimaIteracion.matriz[0].slice(1).some(value => value < 0);
+  console.log('Is Infeasible:', isInfeasible);
 
   return (
     <div className="datos-container">
@@ -57,7 +62,7 @@ function Data() {
               <tr>
                 <th>Variable</th>
                 {ultimaIteracion.matriz[0].slice(1).map((header, index) => (
-                  <th key={index}>{header}</th> 
+                  <th key={index}>{header}</th> // Mostramos cabeceras de variables X
                 ))}
                 <th>RHS</th> 
               </tr>
@@ -65,7 +70,7 @@ function Data() {
             <tbody>
               {ultimaIteracion.matriz.map((row, rowIndex) => (
                 <tr key={rowIndex}>
-                  <td>{rowIndex === 0 ? 'Z' : `Restricción ${rowIndex}`}</td>
+                 <td>{rowIndex === 0 ? 'Z' : `Restricción ${rowIndex}`}</td>
                   {row.map((cell, cellIndex) => (
                     <td key={cellIndex}>{cell}</td>
                   ))}
@@ -79,4 +84,4 @@ function Data() {
   );
 }
 
-export default Data;
+export default Data;
