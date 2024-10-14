@@ -4,16 +4,15 @@ import '../CSS/Data.css';
 
 function Data() {
   const location = useLocation();
-  const { resultado , matrix } = location.state || {};
+  const { resultado, matrix } = location.state || {};
   console.log(resultado);
 
   if (!resultado) {
     return <div className="no-data">No se recibieron datos.</div>;
   }
 
-
-  // Tomamos la última iteración como solución óptima
   const ultimaIteracion = resultado[resultado.length - 1]; 
+  const isInfeasible = ultimaIteracion.matriz[0].slice(1).some(value => value < 0);
 
   return (
     <div className="datos-container">
@@ -48,27 +47,33 @@ function Data() {
 
       <div className="soluciones-optimas">
         <h2>Soluciones Óptimas</h2>
-        <table className="optimum-table">
-          <thead>
-            <tr>
-              <th>Variable</th>
-              {ultimaIteracion.matriz[0].slice(1).map((header, index) => (
-                <th key={index}>{header}</th> // Mostramos cabeceras de variables X
-              ))}
-              <th>RHS</th> 
-            </tr>
-          </thead>
-          <tbody>
-            {ultimaIteracion.matriz.map((row, rowIndex) => (
-              <tr key={rowIndex}>
-                <td>{rowIndex === 0 ? 'Z' : `Restricción ${rowIndex}`}</td>
-                {row.map((cell, cellIndex) => (
-                  <td key={cellIndex}>{cell}</td>
+        {isInfeasible ? (
+          <div className="infactible-message">
+            <p>La solución no es factible.</p>
+          </div>
+        ) : (
+          <table className="optimum-table">
+            <thead>
+              <tr>
+                <th>Variable</th>
+                {ultimaIteracion.matriz[0].slice(1).map((header, index) => (
+                  <th key={index}>{header}</th> 
                 ))}
+                <th>RHS</th> 
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {ultimaIteracion.matriz.map((row, rowIndex) => (
+                <tr key={rowIndex}>
+                  <td>{rowIndex === 0 ? 'Z' : `Restricción ${rowIndex}`}</td>
+                  {row.map((cell, cellIndex) => (
+                    <td key={cellIndex}>{cell}</td>
+                  ))}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        )}
       </div>
     </div>
   );
