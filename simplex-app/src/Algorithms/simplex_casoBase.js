@@ -3,9 +3,7 @@
 import { encogerMatriz } from '../Algorithms/simplex_dosFases';
 
 
-
 // TODO: retorne cuando es no acotado 
-
 
 // *programa asume 1 que la expresion ya esta convertida en negativos
 

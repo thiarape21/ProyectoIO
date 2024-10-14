@@ -16,7 +16,7 @@ function SimplexForm() {
   );
 
   const [restrictionOperators, setRestrictionOperators] = useState(
-    Array(parseInt(restrictions)).fill(method === 'General' ? '≥' : '≥')
+    Array(parseInt(restrictions)).fill(method === 'General' ? '≤' : '≤')
   );
 
   const [errorMessage, setErrorMessage] = useState('');
@@ -99,7 +99,7 @@ function SimplexForm() {
         return;
       }
 
-     // navigate('/data', { state: { resultado, matrix } });
+      navigate('/data', { state: { resultado, matrix } });
 
     }
   };
@@ -300,7 +300,7 @@ function SimplexForm() {
               >
                 {method === 'casobase' ? (
                   // Solo muestra ≥ cuando el método es 'casobase'
-                  <option value="≥">≥</option>
+                  <option value="≤">≤</option>
                 ) : (
                   <>
                     <option value="≥">≥</option>

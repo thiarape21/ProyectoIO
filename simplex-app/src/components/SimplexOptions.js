@@ -52,14 +52,8 @@ function SimplexOptions() {
         <label>Función Objetivo: </label>
         <select value={objectiveFunction} onChange={(e) => setObjectiveFunction(e.target.value)}>
           <option value="">Seleccione el objetivo</option>
-          {method === 'casobase' ? (
-            <option value="Maximizar">Maximizar</option>
-          ) : (
-            <>
-              <option value="Maximizar">Maximizar</option>
-              <option value="Minimizar">Minimizar</option>
-            </>
-          )}
+          <option value="Maximizar">Maximizar</option>
+          <option value="Minimizar">Minimizar</option>
         </select>
 
         <label>Cantidad de variables: </label>
