@@ -4,12 +4,13 @@ import '../CSS/Data.css';
 
 function Data() {
   const location = useLocation();
-  const { resultado } = location.state || {};
+  const { resultado , matrix } = location.state || {};
   console.log(resultado);
 
   if (!resultado) {
     return <div className="no-data">No se recibieron datos.</div>;
   }
+
 
   // Tomamos la última iteración como solución óptima
   const ultimaIteracion = resultado[resultado.length - 1]; 
