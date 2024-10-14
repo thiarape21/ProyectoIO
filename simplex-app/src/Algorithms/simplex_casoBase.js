@@ -168,11 +168,11 @@ export function calcularRadios(matriz, arti, metodo) {
         matriz[2][indiceResultado] = 'N/A';
         filaInicio = 3;
     }
-    else  {
+    else {
         filaInicio = 2;
     }
 
-    
+
 
     console.log(`fila inicio ${filaInicio}`);
 
@@ -204,13 +204,24 @@ Qué vamos a hacer si tenemos un empate en los radios
 • Si f3, f7 → saque f3
 
  */
-export function encontrarIndiceColumnaMenorRadios(matriz, tipoMetodo) {
+export function encontrarIndiceColumnaMenorRadios(matriz, arti, metodo) {
+
     const indiceColumnaRadio = matriz[0].indexOf('Radios');
     if (indiceColumnaRadio === -1) {
         throw new Error("'Radios' no se encuentra en la matriz");
     }
+    let radios;
 
-    let radios = matriz.slice(1).map(fila => fila[indiceColumnaRadio]);
+    if (arti !== 0 && metodo === 'Dos Fases') {
+        radios = matriz.slice(2).map(fila => fila[indiceColumnaRadio]);
+        console.log('asi se ven los radios con dos fases');
+        console.log(radios);
+    }
+    else{
+        radios = matriz.slice(1).map(fila => fila[indiceColumnaRadio]);
+        console.log('asi se ven los radios con dos fases');
+        console.log(radios);
+    }
 
     let valoresRadios = radios.map(valor => {
         if (valor === 'N/A' || valor === '+INF') {
@@ -224,16 +235,7 @@ export function encontrarIndiceColumnaMenorRadios(matriz, tipoMetodo) {
     let indicesMenoresValores = [];
     valoresRadios.forEach((valor, indice) => {
         if (valor === menorValor) {
-            // Si el método es 'Dos Fases', sumar 2, sino, sumar 1
-            if (tipoMetodo === 1 ) {
-                indicesMenoresValores.push(indice + 2);
-                console.log('indices menores dos fases');
-                console.log(indicesMenoresValores);
-            } else {
-                indicesMenoresValores.push(indice + 1); // Sumar 1 para ajustar el índice a la matriz original
-                console.log('indices menores');
-                console.log(indicesMenoresValores);
-            }
+            indicesMenoresValores.push(indice + 1); // Sumar 1 para ajustar el índice a la matriz original
         }
     });
 
@@ -243,8 +245,9 @@ export function encontrarIndiceColumnaMenorRadios(matriz, tipoMetodo) {
     } else {
         return indicesMenoresValores[0]; // Devuelve solo el primer índice si no hay repetidos
     }
-}
 
+
+}
 
 
 export function extraerBVS(matrix, indiceMenores) {
@@ -283,10 +286,10 @@ export function extraerBVS(matrix, indiceMenores) {
 //** Pone el 1 donde debe ser  */
 
 //! aqui hago el cambio en la matriz de las variables entrantes y saliente.
-export function convertirfila1(matrix, arti, tipoMetodo) {
+export function convertirfila1(matrix, arti) {
 
     let columna = encontrarIndiceMenorValorFilaZ(matrix, arti);
-    let fila = encontrarIndiceColumnaMenorRadios(matrix, arti, tipoMetodo);
+    let fila = encontrarIndiceColumnaMenorRadios(matrix, arti, 'Caso Base');
     console.log(`fila que entra ${fila}`)
     let variableEntrante = matrix[0][columna];
     // let variableSaliente = matrix[fila][1];
@@ -411,7 +414,7 @@ export function casoBase(variable, res, sistema, arti, holgura) {
         negativo = encontrarIndiceMenorValorFilaZ(matrixConRadios, 0);
 
         if (negativo !== -2) {
-            let fila1 = encontrarIndiceColumnaMenorRadios(matriz, 0,'Caso Base');
+            let fila1 = encontrarIndiceColumnaMenorRadios(matriz, 0, 'Caso Base');
             let iteracion1 = convertirfila1(matrixConRadios, 0);
 
 
